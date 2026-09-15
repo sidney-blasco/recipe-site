@@ -63,7 +63,7 @@ export default async function IngredientsPage() {
                   {group.ingredients.map((ingredient) => (
                     <li key={ingredient.name}>
                       <Link
-                        href={`/?ingredient=${encodeURIComponent(ingredient.name)}`}
+                        href={`/?ingredients=${encodeURIComponent(ingredient.name)}`}
                         className="flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-ink/80 transition-colors hover:bg-lavender hover:text-plum"
                       >
                         <span>{ingredient.name}</span>

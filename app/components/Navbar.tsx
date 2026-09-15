@@ -3,17 +3,19 @@ import Link from "next/link";
 const navLinks = [
   { href: "/", label: "All Recipes" },
   { href: "/ingredients", label: "Ingredient Index" },
+  { href: "/baking-tips", label: "Baking Tips" },
+  { href: "/photos", label: "Photos" },
 ];
 
 export default function Navbar() {
   return (
     <header className="border-b border-plum/15">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-8 py-6">
-        <Link href="/" className="font-display text-2xl text-plum">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-6 sm:px-8">
+        <Link href="/about" className="font-display text-2xl text-plum">
           Sid Eats
         </Link>
 
-        <nav className="flex items-center gap-8">
+        <nav className="flex flex-wrap items-center gap-x-6 gap-y-2">
           {navLinks.map((link) => (
             <Link
               key={link.href}

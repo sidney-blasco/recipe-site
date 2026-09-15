@@ -8,7 +8,26 @@ export type Recipe = {
   tags: string[];
   ingredients: string[];
   imageUrl: string | null;
+  popularity: number | null;
 };
+
+// Shown wherever the recipe grid would otherwise be empty (no recipes in the
+// database yet), so pages still render something representative.
+export const placeholderRecipes: Recipe[] = [
+  { id: "placeholder-1", title: "Sample Recipe", cuisine: "Italian", mealType: null, tags: [], ingredients: [], imageUrl: null, popularity: null },
+  { id: "placeholder-2", title: "Sample Recipe", cuisine: "Breakfast", mealType: null, tags: [], ingredients: [], imageUrl: null, popularity: null },
+  { id: "placeholder-3", title: "Sample Recipe", cuisine: "Dessert", mealType: null, tags: [], ingredients: [], imageUrl: null, popularity: null },
+  { id: "placeholder-4", title: "Sample Recipe", cuisine: "Vegan", mealType: null, tags: [], ingredients: [], imageUrl: null, popularity: null },
+];
+
+// Sorts by popularity (highest first); recipes without a popularity score
+// keep their existing relative order, which is newest-first from getRecipes.
+// This naturally falls back to "newest" until popularity data is filled in.
+export function pickFeaturedRecipes(recipes: Recipe[], limit: number): Recipe[] {
+  return [...recipes]
+    .sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
+    .slice(0, limit);
+}
 
 export type RecipeIngredient = {
   name: string;
@@ -90,8 +109,9 @@ export async function getRecipes(): Promise<Recipe[]> {
     tags: string[] | null;
     ingredients: unknown;
     image_url: string | null;
+    popularity: number | null;
   }>(
-    `SELECT id, title, cuisine, meal_type, tags, ingredients, image_url
+    `SELECT id, title, cuisine, meal_type, tags, ingredients, image_url, popularity
      FROM recipes
      ORDER BY created_at DESC`
   );
@@ -104,6 +124,7 @@ export async function getRecipes(): Promise<Recipe[]> {
     tags: row.tags ?? [],
     ingredients: parseIngredients(row.ingredients).map((ingredient) => ingredient.name),
     imageUrl: row.image_url,
+    popularity: row.popularity,
   }));
 }
 

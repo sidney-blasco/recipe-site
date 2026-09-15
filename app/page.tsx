@@ -1,22 +1,8 @@
 import Link from "next/link";
 import RecipeCard from "./components/RecipeCard";
 import RecipeFilters from "./components/RecipeFilters";
-import { getRecipes, type Recipe } from "./lib/recipes";
-import {
-  buildFilterGroups,
-  buildFilterHref,
-  countActiveFilters,
-  filterRecipes,
-  parseIngredientFilter,
-  parseSelectedFilters,
-} from "./lib/filters";
-
-const placeholderRecipes: Recipe[] = [
-  { id: "placeholder-1", title: "Sample Recipe", cuisine: "Italian", mealType: null, tags: [], ingredients: [], imageUrl: null },
-  { id: "placeholder-2", title: "Sample Recipe", cuisine: "Breakfast", mealType: null, tags: [], ingredients: [], imageUrl: null },
-  { id: "placeholder-3", title: "Sample Recipe", cuisine: "Dessert", mealType: null, tags: [], ingredients: [], imageUrl: null },
-  { id: "placeholder-4", title: "Sample Recipe", cuisine: "Vegan", mealType: null, tags: [], ingredients: [], imageUrl: null },
-];
+import { getRecipes, placeholderRecipes } from "./lib/recipes";
+import { buildFilterGroups, countActiveFilters, filterRecipes, parseSelectedFilters } from "./lib/filters";
 
 export default async function Home(props: PageProps<"/">) {
   const searchParams = await props.searchParams;
@@ -24,10 +10,9 @@ export default async function Home(props: PageProps<"/">) {
   const cards = recipes.length > 0 ? recipes : placeholderRecipes;
 
   const selected = parseSelectedFilters(searchParams);
-  const ingredient = parseIngredientFilter(searchParams);
   const activeCount = countActiveFilters(selected);
   const groups = buildFilterGroups(cards);
-  const filtered = filterRecipes(cards, selected, ingredient);
+  const filtered = filterRecipes(cards, selected);
 
   return (
     <>
@@ -41,26 +26,12 @@ export default async function Home(props: PageProps<"/">) {
 
       <section className="mx-auto max-w-6xl px-6 pb-24 sm:px-8">
         <div className="lg:flex lg:items-start lg:gap-10">
-          <RecipeFilters groups={groups} selected={selected} activeCount={activeCount} ingredient={ingredient} />
+          <RecipeFilters groups={groups} selected={selected} activeCount={activeCount} />
 
           <div className="flex-1">
-            {ingredient && (
-              <div className="mb-4 flex items-center gap-2 text-sm">
-                <span className="rounded-full bg-lavender px-3 py-1 font-semibold text-plum">
-                  Ingredient: {ingredient}
-                </span>
-                <Link
-                  href={buildFilterHref("/", selected, null)}
-                  className="text-mauve underline underline-offset-4 hover:text-plum"
-                >
-                  Clear
-                </Link>
-              </div>
-            )}
-
             <p className="mb-6 text-sm text-ink/60">
               {filtered.length} {filtered.length === 1 ? "recipe" : "recipes"}
-              {activeCount > 0 || ingredient ? " matching your filters" : ""}
+              {activeCount > 0 ? " matching your filters" : ""}
             </p>
 
             {filtered.length > 0 ? (
