@@ -31,7 +31,7 @@ export default async function AdminRecipesPage() {
               </div>
               <div className="flex items-center gap-3">
                 <Link
-                  href={`/admin/recipes/${recipe.id}/edit`}
+                  href={`/recipes/${recipe.id}`}
                   className="rounded-full border border-plum/30 px-4 py-1.5 text-sm font-semibold text-plum transition-colors hover:bg-lavender"
                 >
                   Edit

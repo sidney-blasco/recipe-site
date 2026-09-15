@@ -29,7 +29,7 @@ export default async function AdminBakingTipsPage() {
               </div>
               <div className="flex items-center gap-3">
                 <Link
-                  href={`/admin/baking-tips/${tip.id}/edit`}
+                  href={`/baking-tips/${tip.id}`}
                   className="rounded-full border border-plum/30 px-4 py-1.5 text-sm font-semibold text-plum transition-colors hover:bg-lavender"
                 >
                   Edit

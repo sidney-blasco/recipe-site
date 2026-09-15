@@ -2,15 +2,8 @@
 
 import { useActionState } from "react";
 import { TAG_VOCABULARY } from "../../lib/filters";
-import type { RecipeIngredient } from "../../lib/recipes";
+import { formatIngredientLine, type RecipeIngredient } from "../../lib/recipe-format";
 import type { RecipeFormState } from "./actions";
-
-// Recreates a display line for an ingredient entered under the old
-// amount/unit/name UI, so editing an older recipe still shows one line per
-// ingredient in the new plain textarea.
-function ingredientToLine(ingredient: RecipeIngredient): string {
-  return [ingredient.amount, ingredient.unit, ingredient.name].filter(Boolean).join(" ");
-}
 
 type RecipeFormInitial = {
   title: string;
@@ -85,7 +78,7 @@ function CheckboxGroup({
 export default function RecipeForm({ formAction, submitLabel, initial }: RecipeFormProps) {
   const [state, action, pending] = useActionState(formAction, initialState);
 
-  const ingredientsText = initial?.ingredients.map(ingredientToLine).join("\n") ?? "";
+  const ingredientsText = initial?.ingredients.map(formatIngredientLine).join("\n") ?? "";
   const instructionsText = initial?.instructions.join("\n") ?? "";
 
   return (

@@ -1,4 +1,7 @@
 import { pool } from "./db";
+import { formatIngredientLine, type RecipeIngredient } from "./recipe-format";
+
+export { formatIngredientLine, type RecipeIngredient };
 
 export type Recipe = {
   id: string;
@@ -28,12 +31,6 @@ export function pickFeaturedRecipes(recipes: Recipe[], limit: number): Recipe[] 
     .sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
     .slice(0, limit);
 }
-
-export type RecipeIngredient = {
-  name: string;
-  amount: string | null;
-  unit: string | null;
-};
 
 export type RecipeDetail = {
   id: string;

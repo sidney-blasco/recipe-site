@@ -11,3 +11,10 @@ export async function requireAdminSession(): Promise<void> {
     redirect("/login");
   }
 }
+
+// Non-redirecting check for public pages that conditionally show admin-only
+// UI (e.g. the inline "Edit Mode" toggle) without gating the whole route.
+export async function checkIsAdmin(): Promise<boolean> {
+  const cookieStore = await cookies();
+  return isValidSessionToken(cookieStore.get(SESSION_COOKIE_NAME)?.value);
+}

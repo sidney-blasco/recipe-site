@@ -1,4 +1,5 @@
 import { pool } from "./db";
+import { formatDate } from "./format-date";
 
 export type Tip = {
   id: string;
@@ -76,10 +77,4 @@ export async function getTipById(id: string): Promise<Tip | null> {
   return row ? mapRow(row) : null;
 }
 
-export function formatTipDate(isoDate: string): string {
-  return new Date(isoDate).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
+export const formatTipDate = formatDate;

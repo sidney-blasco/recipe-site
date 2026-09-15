@@ -1,15 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { formatDate } from "../../lib/format-date";
 import type { Comment } from "../../lib/comments";
 import { submitComment } from "./actions";
 
 const inputClass =
   "rounded-lg border border-plum/20 bg-white/70 px-3 py-2 text-ink placeholder:text-ink/40 focus:border-plum/50 focus:outline-none";
-
-function formatCommentDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-}
 
 function Star({ filled }: { filled: boolean }) {
   return (
@@ -86,7 +83,7 @@ export default function CommentsSection({
             <li key={c.id} className="border-b border-plum/10 pb-6 last:border-0">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="font-semibold text-plum">{c.name}</p>
-                <span className="text-xs text-ink/50">{formatCommentDate(c.createdAt)}</span>
+                <span className="text-xs text-ink/50">{formatDate(c.createdAt)}</span>
               </div>
               <div className="mt-1">
                 <StarDisplay rating={c.rating} />
