@@ -1,11 +1,16 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 import { TAG_VOCABULARY } from "../../lib/filters";
 import type { RecipeIngredient } from "../../lib/recipes";
 import type { RecipeFormState } from "./actions";
 
-type IngredientRow = { name: string; amount: string; unit: string };
+// Recreates a display line for an ingredient entered under the old
+// amount/unit/name UI, so editing an older recipe still shows one line per
+// ingredient in the new plain textarea.
+function ingredientToLine(ingredient: RecipeIngredient): string {
+  return [ingredient.amount, ingredient.unit, ingredient.name].filter(Boolean).join(" ");
+}
 
 type RecipeFormInitial = {
   title: string;
@@ -74,43 +79,8 @@ function CheckboxGroup({
 export default function RecipeForm({ formAction, submitLabel, initial }: RecipeFormProps) {
   const [state, action, pending] = useActionState(formAction, initialState);
 
-  const [ingredients, setIngredients] = useState<IngredientRow[]>(
-    initial && initial.ingredients.length > 0
-      ? initial.ingredients.map((ingredient) => ({
-          name: ingredient.name,
-          amount: ingredient.amount ?? "",
-          unit: ingredient.unit ?? "",
-        }))
-      : [{ name: "", amount: "", unit: "" }]
-  );
-
-  const [steps, setSteps] = useState<string[]>(
-    initial && initial.instructions.length > 0 ? initial.instructions : [""]
-  );
-
-  function updateIngredient(index: number, field: keyof IngredientRow, value: string) {
-    setIngredients((rows) => rows.map((row, i) => (i === index ? { ...row, [field]: value } : row)));
-  }
-
-  function addIngredient() {
-    setIngredients((rows) => [...rows, { name: "", amount: "", unit: "" }]);
-  }
-
-  function removeIngredient(index: number) {
-    setIngredients((rows) => (rows.length > 1 ? rows.filter((_, i) => i !== index) : rows));
-  }
-
-  function updateStep(index: number, value: string) {
-    setSteps((rows) => rows.map((row, i) => (i === index ? value : row)));
-  }
-
-  function addStep() {
-    setSteps((rows) => [...rows, ""]);
-  }
-
-  function removeStep(index: number) {
-    setSteps((rows) => (rows.length > 1 ? rows.filter((_, i) => i !== index) : rows));
-  }
+  const ingredientsText = initial?.ingredients.map(ingredientToLine).join("\n") ?? "";
+  const instructionsText = initial?.instructions.join("\n") ?? "";
 
   return (
     <form action={action} encType="multipart/form-data" className="flex flex-col gap-10">
@@ -162,86 +132,27 @@ export default function RecipeForm({ formAction, submitLabel, initial }: RecipeF
         />
       </div>
 
-      <section>
-        <h2 className="font-display text-xl text-plum">Ingredients</h2>
-        <div className="mt-3 flex flex-col gap-2">
-          {ingredients.map((row, index) => (
-            <div key={index} className="flex flex-wrap items-center gap-2">
-              <input
-                name="ingredientAmount"
-                value={row.amount}
-                onChange={(event) => updateIngredient(index, "amount", event.target.value)}
-                placeholder="Amount"
-                className={`${inputClass} w-20`}
-              />
-              <input
-                name="ingredientUnit"
-                value={row.unit}
-                onChange={(event) => updateIngredient(index, "unit", event.target.value)}
-                placeholder="Unit"
-                className={`${inputClass} w-24`}
-              />
-              <input
-                name="ingredientName"
-                value={row.name}
-                onChange={(event) => updateIngredient(index, "name", event.target.value)}
-                placeholder="Ingredient name"
-                className={`${inputClass} min-w-0 flex-1`}
-              />
-              <button
-                type="button"
-                onClick={() => removeIngredient(index)}
-                disabled={ingredients.length === 1}
-                className="rounded-full border border-plum/20 px-3 py-1.5 text-xs font-semibold text-ink/60 transition-colors hover:bg-lavender disabled:opacity-40"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
-        <button
-          type="button"
-          onClick={addIngredient}
-          className="mt-3 rounded-full border border-plum/30 px-4 py-1.5 text-sm font-semibold text-plum transition-colors hover:bg-lavender"
-        >
-          + Add Ingredient
-        </button>
-      </section>
+      <Field label="Ingredients">
+        <textarea
+          name="ingredientsText"
+          defaultValue={ingredientsText}
+          rows={10}
+          placeholder={"2 cups flour\n1 tsp salt\n3 eggs"}
+          className={inputClass}
+        />
+        <p className="text-xs text-ink/50">One ingredient per line.</p>
+      </Field>
 
-      <section>
-        <h2 className="font-display text-xl text-plum">Instructions</h2>
-        <div className="mt-3 flex flex-col gap-3">
-          {steps.map((step, index) => (
-            <div key={index} className="flex items-start gap-3">
-              <span className="mt-2 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-plum text-sm font-semibold text-cream">
-                {index + 1}
-              </span>
-              <textarea
-                name="instructionStep"
-                value={step}
-                onChange={(event) => updateStep(index, event.target.value)}
-                rows={2}
-                className={`${inputClass} min-w-0 flex-1`}
-              />
-              <button
-                type="button"
-                onClick={() => removeStep(index)}
-                disabled={steps.length === 1}
-                className="mt-2 rounded-full border border-plum/20 px-3 py-1.5 text-xs font-semibold text-ink/60 transition-colors hover:bg-lavender disabled:opacity-40"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
-        <button
-          type="button"
-          onClick={addStep}
-          className="mt-3 rounded-full border border-plum/30 px-4 py-1.5 text-sm font-semibold text-plum transition-colors hover:bg-lavender"
-        >
-          + Add Step
-        </button>
-      </section>
+      <Field label="Instructions">
+        <textarea
+          name="instructionsText"
+          defaultValue={instructionsText}
+          rows={10}
+          placeholder={"Preheat the oven to 350°F.\nMix the dry ingredients.\nBake for 25 minutes."}
+          className={inputClass}
+        />
+        <p className="text-xs text-ink/50">One step per line — no numbers needed, they&apos;re added automatically.</p>
+      </Field>
 
       <Field label="Photo">
         <div className="flex flex-col gap-3">

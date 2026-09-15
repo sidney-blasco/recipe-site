@@ -23,30 +23,20 @@ function collectCuratedTags(formData: FormData): string[] {
   return tags;
 }
 
-function collectIngredients(formData: FormData) {
-  const names = formData.getAll("ingredientName").map(String);
-  const amounts = formData.getAll("ingredientAmount").map(String);
-  const units = formData.getAll("ingredientUnit").map(String);
+// Splits a pasted textarea into one trimmed entry per non-empty line.
+function splitLines(formData: FormData, fieldName: string): string[] {
+  return String(formData.get(fieldName) ?? "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
 
-  const ingredients: { name: string; amount: string | null; unit: string | null }[] = [];
-  for (let i = 0; i < names.length; i++) {
-    const name = names[i]?.trim();
-    if (!name) continue;
-    ingredients.push({
-      name,
-      amount: amounts[i]?.trim() || null,
-      unit: units[i]?.trim() || null,
-    });
-  }
-  return ingredients;
+function collectIngredients(formData: FormData): string[] {
+  return splitLines(formData, "ingredientsText");
 }
 
 function collectInstructions(formData: FormData): string[] {
-  return formData
-    .getAll("instructionStep")
-    .map(String)
-    .map((step) => step.trim())
-    .filter(Boolean);
+  return splitLines(formData, "instructionsText");
 }
 
 // Returns the new image URL, `null` if no file was provided (keep existing),
