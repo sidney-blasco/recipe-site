@@ -33,6 +33,12 @@ export default async function EditRecipePage(props: PageProps<"/admin/recipes/[i
             ingredients: recipe.ingredients,
             instructions: recipe.instructions,
             imageUrl: recipe.imageUrl,
+            description: recipe.description ?? "",
+            prepTime: recipe.prepTime ?? "",
+            cookTime: recipe.cookTime ?? "",
+            totalTime: recipe.totalTime ?? "",
+            servings: recipe.servings ?? "",
+            notes: recipe.notes ?? "",
           }}
         />
       </div>

@@ -39,6 +39,11 @@ function collectInstructions(formData: FormData): string[] {
   return splitLines(formData, "instructionsText");
 }
 
+function textOrNull(formData: FormData, fieldName: string): string | null {
+  const value = String(formData.get(fieldName) ?? "").trim();
+  return value || null;
+}
+
 // Returns the new image URL, `null` if no file was provided (keep existing),
 // or throws if a file was provided but the upload failed.
 async function uploadImageIfProvided(formData: FormData): Promise<string | null> {
@@ -68,6 +73,13 @@ export async function createRecipe(_prevState: RecipeFormState, formData: FormDa
   const mealType = String(formData.get("type") ?? "").trim() || null;
   const tags = collectCuratedTags(formData);
 
+  const description = textOrNull(formData, "description");
+  const prepTime = textOrNull(formData, "prepTime");
+  const cookTime = textOrNull(formData, "cookTime");
+  const totalTime = textOrNull(formData, "totalTime");
+  const servings = textOrNull(formData, "servings");
+  const notes = textOrNull(formData, "notes");
+
   let imageUrl: string | null;
   try {
     imageUrl = await uploadImageIfProvided(formData);
@@ -76,9 +88,26 @@ export async function createRecipe(_prevState: RecipeFormState, formData: FormDa
   }
 
   await pool.query(
-    `INSERT INTO recipes (title, cuisine, meal_type, tags, ingredients, instructions, image_url)
-     VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7)`,
-    [title, cuisine, mealType, tags, JSON.stringify(ingredients), JSON.stringify(instructions), imageUrl]
+    `INSERT INTO recipes (
+       title, cuisine, meal_type, tags, ingredients, instructions, image_url,
+       description, prep_time, cook_time, total_time, servings, notes
+     )
+     VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7, $8, $9, $10, $11, $12, $13)`,
+    [
+      title,
+      cuisine,
+      mealType,
+      tags,
+      JSON.stringify(ingredients),
+      JSON.stringify(instructions),
+      imageUrl,
+      description,
+      prepTime,
+      cookTime,
+      totalTime,
+      servings,
+      notes,
+    ]
   );
 
   revalidatePath("/admin/recipes");
@@ -105,6 +134,13 @@ export async function updateRecipe(
   const cuisine = String(formData.get("cuisine") ?? "").trim() || null;
   const mealType = String(formData.get("type") ?? "").trim() || null;
 
+  const description = textOrNull(formData, "description");
+  const prepTime = textOrNull(formData, "prepTime");
+  const cookTime = textOrNull(formData, "cookTime");
+  const totalTime = textOrNull(formData, "totalTime");
+  const servings = textOrNull(formData, "servings");
+  const notes = textOrNull(formData, "notes");
+
   // Preserve any custom "Other" tags this recipe already had — the form only
   // exposes the curated Dietary/Occasion/Seasonal/Skill Level vocabularies.
   const existing = await pool.query<{ tags: string[] | null }>(`SELECT tags FROM recipes WHERE id = $1`, [id]);
@@ -121,16 +157,47 @@ export async function updateRecipe(
   if (uploadedImageUrl) {
     await pool.query(
       `UPDATE recipes
-       SET title = $1, cuisine = $2, meal_type = $3, tags = $4, ingredients = $5::jsonb, instructions = $6::jsonb, image_url = $7
-       WHERE id = $8`,
-      [title, cuisine, mealType, tags, JSON.stringify(ingredients), JSON.stringify(instructions), uploadedImageUrl, id]
+       SET title = $1, cuisine = $2, meal_type = $3, tags = $4, ingredients = $5::jsonb, instructions = $6::jsonb,
+           image_url = $7, description = $8, prep_time = $9, cook_time = $10, total_time = $11, servings = $12, notes = $13
+       WHERE id = $14`,
+      [
+        title,
+        cuisine,
+        mealType,
+        tags,
+        JSON.stringify(ingredients),
+        JSON.stringify(instructions),
+        uploadedImageUrl,
+        description,
+        prepTime,
+        cookTime,
+        totalTime,
+        servings,
+        notes,
+        id,
+      ]
     );
   } else {
     await pool.query(
       `UPDATE recipes
-       SET title = $1, cuisine = $2, meal_type = $3, tags = $4, ingredients = $5::jsonb, instructions = $6::jsonb
-       WHERE id = $7`,
-      [title, cuisine, mealType, tags, JSON.stringify(ingredients), JSON.stringify(instructions), id]
+       SET title = $1, cuisine = $2, meal_type = $3, tags = $4, ingredients = $5::jsonb, instructions = $6::jsonb,
+           description = $7, prep_time = $8, cook_time = $9, total_time = $10, servings = $11, notes = $12
+       WHERE id = $13`,
+      [
+        title,
+        cuisine,
+        mealType,
+        tags,
+        JSON.stringify(ingredients),
+        JSON.stringify(instructions),
+        description,
+        prepTime,
+        cookTime,
+        totalTime,
+        servings,
+        notes,
+        id,
+      ]
     );
   }
 

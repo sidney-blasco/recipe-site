@@ -44,6 +44,12 @@ export type RecipeDetail = {
   ingredients: RecipeIngredient[];
   instructions: string[];
   imageUrl: string | null;
+  description: string | null;
+  prepTime: string | null;
+  cookTime: string | null;
+  totalTime: string | null;
+  servings: string | null;
+  notes: string | null;
 };
 
 // Ingredients are stored as jsonb — either an array of plain strings, or
@@ -142,8 +148,15 @@ export async function getRecipeById(id: string): Promise<RecipeDetail | null> {
     ingredients: unknown;
     instructions: unknown;
     image_url: string | null;
+    description: string | null;
+    prep_time: string | null;
+    cook_time: string | null;
+    total_time: string | null;
+    servings: string | null;
+    notes: string | null;
   }>(
-    `SELECT id, title, cuisine, meal_type, tags, ingredients, instructions, image_url
+    `SELECT id, title, cuisine, meal_type, tags, ingredients, instructions, image_url,
+            description, prep_time, cook_time, total_time, servings, notes
      FROM recipes
      WHERE id = $1`,
     [id]
@@ -161,5 +174,11 @@ export async function getRecipeById(id: string): Promise<RecipeDetail | null> {
     ingredients: parseIngredients(row.ingredients),
     instructions: parseInstructions(row.instructions),
     imageUrl: row.image_url,
+    description: row.description,
+    prepTime: row.prep_time,
+    cookTime: row.cook_time,
+    totalTime: row.total_time,
+    servings: row.servings,
+    notes: row.notes,
   };
 }

@@ -23,6 +23,12 @@ type RecipeFormInitial = {
   ingredients: RecipeIngredient[];
   instructions: string[];
   imageUrl: string | null;
+  description: string;
+  prepTime: string;
+  cookTime: string;
+  totalTime: string;
+  servings: string;
+  notes: string;
 };
 
 type RecipeFormProps = {
@@ -111,6 +117,31 @@ export default function RecipeForm({ formAction, submitLabel, initial }: RecipeF
         </Field>
       </div>
 
+      <Field label="Description">
+        <textarea
+          name="description"
+          defaultValue={initial?.description}
+          rows={4}
+          placeholder="A short intro shown at the top of the recipe page — the story behind it, why you make it, what makes it work."
+          className={inputClass}
+        />
+      </Field>
+
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <Field label="Prep Time">
+          <input name="prepTime" defaultValue={initial?.prepTime} placeholder="15 min" className={inputClass} />
+        </Field>
+        <Field label="Cook Time">
+          <input name="cookTime" defaultValue={initial?.cookTime} placeholder="30 min" className={inputClass} />
+        </Field>
+        <Field label="Total Time">
+          <input name="totalTime" defaultValue={initial?.totalTime} placeholder="45 min" className={inputClass} />
+        </Field>
+        <Field label="Servings">
+          <input name="servings" defaultValue={initial?.servings} placeholder="4" className={inputClass} />
+        </Field>
+      </div>
+
       <div className="flex flex-col gap-6">
         <CheckboxGroup
           label="Dietary"
@@ -152,6 +183,16 @@ export default function RecipeForm({ formAction, submitLabel, initial }: RecipeF
           className={inputClass}
         />
         <p className="text-xs text-ink/50">One step per line — no numbers needed, they&apos;re added automatically.</p>
+      </Field>
+
+      <Field label="Notes">
+        <textarea
+          name="notes"
+          defaultValue={initial?.notes}
+          rows={5}
+          placeholder="Tips, substitutions, storage instructions, etc."
+          className={inputClass}
+        />
       </Field>
 
       <Field label="Photo">
