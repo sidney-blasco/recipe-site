@@ -12,7 +12,7 @@ export default function Navbar() {
     <header className="border-b border-plum/15">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-6 sm:px-8">
         <Link href="/about" className="font-display text-2xl text-plum">
-          Sid Eats
+          Convivial
         </Link>
 
         <nav className="flex flex-wrap items-center gap-x-6 gap-y-2">

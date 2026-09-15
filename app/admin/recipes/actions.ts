@@ -1,0 +1,158 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { put } from "@vercel/blob";
+import { pool } from "../../lib/db";
+import { classifyTags } from "../../lib/filters";
+import { requireAdminSession } from "../../lib/require-admin";
+
+export type RecipeFormState = {
+  error: string | null;
+};
+
+function collectCuratedTags(formData: FormData): string[] {
+  const dietary = formData.getAll("dietary").map(String);
+  const occasion = formData.getAll("occasion").map(String);
+  const seasonal = formData.getAll("seasonal").map(String);
+  const skillLevel = formData.get("skillLevel");
+  const tags = [...dietary, ...occasion, ...seasonal];
+  if (typeof skillLevel === "string" && skillLevel.trim()) {
+    tags.push(skillLevel.trim());
+  }
+  return tags;
+}
+
+function collectIngredients(formData: FormData) {
+  const names = formData.getAll("ingredientName").map(String);
+  const amounts = formData.getAll("ingredientAmount").map(String);
+  const units = formData.getAll("ingredientUnit").map(String);
+
+  const ingredients: { name: string; amount: string | null; unit: string | null }[] = [];
+  for (let i = 0; i < names.length; i++) {
+    const name = names[i]?.trim();
+    if (!name) continue;
+    ingredients.push({
+      name,
+      amount: amounts[i]?.trim() || null,
+      unit: units[i]?.trim() || null,
+    });
+  }
+  return ingredients;
+}
+
+function collectInstructions(formData: FormData): string[] {
+  return formData
+    .getAll("instructionStep")
+    .map(String)
+    .map((step) => step.trim())
+    .filter(Boolean);
+}
+
+// Returns the new image URL, `null` if no file was provided (keep existing),
+// or throws if a file was provided but the upload failed.
+async function uploadImageIfProvided(formData: FormData): Promise<string | null> {
+  const file = formData.get("image");
+  if (!(file instanceof File) || file.size === 0) return null;
+
+  const blob = await put(`recipes/${crypto.randomUUID()}-${file.name}`, file, {
+    access: "public",
+    addRandomSuffix: false,
+  });
+  return blob.url;
+}
+
+export async function createRecipe(_prevState: RecipeFormState, formData: FormData): Promise<RecipeFormState> {
+  await requireAdminSession();
+
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) return { error: "Title is required." };
+
+  const ingredients = collectIngredients(formData);
+  if (ingredients.length === 0) return { error: "Add at least one ingredient." };
+
+  const instructions = collectInstructions(formData);
+  if (instructions.length === 0) return { error: "Add at least one instruction step." };
+
+  const cuisine = String(formData.get("cuisine") ?? "").trim() || null;
+  const mealType = String(formData.get("type") ?? "").trim() || null;
+  const tags = collectCuratedTags(formData);
+
+  let imageUrl: string | null;
+  try {
+    imageUrl = await uploadImageIfProvided(formData);
+  } catch {
+    return { error: "Image upload failed. Please try again." };
+  }
+
+  await pool.query(
+    `INSERT INTO recipes (title, cuisine, meal_type, tags, ingredients, instructions, image_url)
+     VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7)`,
+    [title, cuisine, mealType, tags, JSON.stringify(ingredients), JSON.stringify(instructions), imageUrl]
+  );
+
+  revalidatePath("/admin/recipes");
+  revalidatePath("/");
+  redirect("/admin/recipes");
+}
+
+export async function updateRecipe(
+  id: string,
+  _prevState: RecipeFormState,
+  formData: FormData
+): Promise<RecipeFormState> {
+  await requireAdminSession();
+
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) return { error: "Title is required." };
+
+  const ingredients = collectIngredients(formData);
+  if (ingredients.length === 0) return { error: "Add at least one ingredient." };
+
+  const instructions = collectInstructions(formData);
+  if (instructions.length === 0) return { error: "Add at least one instruction step." };
+
+  const cuisine = String(formData.get("cuisine") ?? "").trim() || null;
+  const mealType = String(formData.get("type") ?? "").trim() || null;
+
+  // Preserve any custom "Other" tags this recipe already had — the form only
+  // exposes the curated Dietary/Occasion/Seasonal/Skill Level vocabularies.
+  const existing = await pool.query<{ tags: string[] | null }>(`SELECT tags FROM recipes WHERE id = $1`, [id]);
+  const { other } = classifyTags(existing.rows[0]?.tags ?? []);
+  const tags = [...collectCuratedTags(formData), ...other];
+
+  let uploadedImageUrl: string | null;
+  try {
+    uploadedImageUrl = await uploadImageIfProvided(formData);
+  } catch {
+    return { error: "Image upload failed. Please try again." };
+  }
+
+  if (uploadedImageUrl) {
+    await pool.query(
+      `UPDATE recipes
+       SET title = $1, cuisine = $2, meal_type = $3, tags = $4, ingredients = $5::jsonb, instructions = $6::jsonb, image_url = $7
+       WHERE id = $8`,
+      [title, cuisine, mealType, tags, JSON.stringify(ingredients), JSON.stringify(instructions), uploadedImageUrl, id]
+    );
+  } else {
+    await pool.query(
+      `UPDATE recipes
+       SET title = $1, cuisine = $2, meal_type = $3, tags = $4, ingredients = $5::jsonb, instructions = $6::jsonb
+       WHERE id = $7`,
+      [title, cuisine, mealType, tags, JSON.stringify(ingredients), JSON.stringify(instructions), id]
+    );
+  }
+
+  revalidatePath("/admin/recipes");
+  revalidatePath(`/recipes/${id}`);
+  revalidatePath("/");
+  redirect("/admin/recipes");
+}
+
+export async function deleteRecipe(id: string) {
+  await requireAdminSession();
+  await pool.query(`DELETE FROM recipes WHERE id = $1`, [id]);
+  revalidatePath("/admin/recipes");
+  revalidatePath("/");
+}

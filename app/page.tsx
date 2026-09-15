@@ -17,7 +17,7 @@ export default async function Home(props: PageProps<"/">) {
   return (
     <>
       <section className="mx-auto max-w-3xl px-6 pt-20 pb-12 text-center">
-        <h1 className="text-4xl sm:text-5xl">Sid Eats</h1>
+        <h1 className="text-4xl sm:text-5xl">Convivial</h1>
         <p className="mt-4 text-lg text-ink/80">
           A running collection of the recipes I actually cook on repeat —
           organized by cuisine, occasion, and how much energy I have that day.

@@ -1,7 +1,10 @@
 import PhotoGallery from "../components/PhotoGallery";
-import { placeholderPhotos } from "../lib/photos";
+import { getPhotos, placeholderPhotos } from "../lib/photos";
 
-export default function PhotosPage() {
+export default async function PhotosPage() {
+  const photos = await getPhotos();
+  const cards = photos.length > 0 ? photos : placeholderPhotos;
+
   return (
     <main className="mx-auto max-w-5xl px-6 pb-24 pt-16 sm:px-8">
       <div className="text-center">
@@ -12,7 +15,7 @@ export default function PhotosPage() {
       </div>
 
       <div className="mt-14">
-        <PhotoGallery photos={placeholderPhotos} />
+        <PhotoGallery photos={cards} />
       </div>
     </main>
   );

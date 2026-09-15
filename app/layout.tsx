@@ -16,7 +16,7 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Sid Eats",
+  title: "Convivial",
   description: "A personal recipe collection.",
 };
 

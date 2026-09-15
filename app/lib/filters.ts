@@ -40,12 +40,13 @@ const GROUP_LABELS: Record<FilterGroupKey, string> = {
   other: "Other",
 };
 
-type CuratedTagGroupKey = "dietary" | "occasion" | "seasonal" | "skillLevel";
+export type CuratedTagGroupKey = "dietary" | "occasion" | "seasonal" | "skillLevel";
 
 // These facets don't have dedicated columns, so they're matched against the
 // free-form `tags` array using a fixed, curated vocabulary. Any tag on a
 // recipe that isn't part of one of these lists surfaces under "Other".
-const TAG_VOCABULARY: Record<CuratedTagGroupKey, string[]> = {
+// Exported so the admin recipe form can render the exact same option lists.
+export const TAG_VOCABULARY: Record<CuratedTagGroupKey, string[]> = {
   dietary: ["Healthy", "Dairy Free", "Egg Free", "Gluten Free", "Vegan"],
   occasion: ["Birthday", "Dinner Party", "Snack", "Carb Heavy", "Protein Heavy", "Breakfast"],
   seasonal: ["Spring", "Summer", "Fall", "Winter"],
@@ -67,6 +68,36 @@ function hasTag(recipe: Recipe, tag: string): boolean {
 export function getDietaryTags(tags: string[]): string[] {
   const lowerTags = tags.map((tag) => tag.toLowerCase());
   return TAG_VOCABULARY.dietary.filter((tag) => lowerTags.includes(tag.toLowerCase()));
+}
+
+export type ClassifiedTags = {
+  dietary: string[];
+  occasion: string[];
+  seasonal: string[];
+  skillLevel: string | null;
+  /** Custom tags that don't belong to any curated vocabulary (the "Other" facet). */
+  other: string[];
+};
+
+// Splits a recipe's flat `tags` array back into the curated buckets (plus
+// leftover "Other" tags), so the admin edit form can pre-fill its checkboxes
+// without losing any custom tags it doesn't have a field for.
+export function classifyTags(tags: string[]): ClassifiedTags {
+  const lower = tags.map((tag) => tag.toLowerCase());
+  const pick = (vocab: string[]) => vocab.filter((option) => lower.includes(option.toLowerCase()));
+
+  const dietary = pick(TAG_VOCABULARY.dietary);
+  const occasion = pick(TAG_VOCABULARY.occasion);
+  const seasonal = pick(TAG_VOCABULARY.seasonal);
+  const skillLevelMatches = pick(TAG_VOCABULARY.skillLevel);
+
+  return {
+    dietary,
+    occasion,
+    seasonal,
+    skillLevel: skillLevelMatches[0] ?? null,
+    other: tags.filter((tag) => !CURATED_TAGS_LOWER.has(tag.toLowerCase())),
+  };
 }
 
 export function parseSelectedFilters(
