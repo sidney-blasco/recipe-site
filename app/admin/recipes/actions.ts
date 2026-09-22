@@ -6,10 +6,51 @@ import { pool } from "../../lib/db";
 import { splitLines, textOrNull, numberOrNull } from "../../lib/form-fields";
 import { uploadImageIfProvided } from "../../lib/blob";
 import { requireAdminSession } from "../../lib/require-admin";
+import { upsertIngredientLibraryEntries, type LibraryUpsertEntry } from "../../lib/ingredient-library";
 
 export type RecipeFormState = {
   error: string | null;
 };
+
+// The ingredientLibraryUpserts hidden field is client-computed JSON — treat
+// it as untrusted input and rebuild each entry field-by-field rather than
+// trusting its shape.
+function parseLibraryUpserts(formData: FormData): LibraryUpsertEntry[] {
+  const raw = String(formData.get("ingredientLibraryUpserts") ?? "");
+  if (!raw) return [];
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return [];
+  }
+  if (!Array.isArray(parsed)) return [];
+
+  const toNumberOrNull = (value: unknown): number | null =>
+    typeof value === "number" && Number.isFinite(value) ? value : null;
+
+  const entries: LibraryUpsertEntry[] = [];
+  for (const item of parsed) {
+    if (!item || typeof item !== "object") continue;
+    const record = item as Record<string, unknown>;
+    const name = typeof record.name === "string" ? record.name.trim() : "";
+    const unit = typeof record.unit === "string" ? record.unit : "";
+    if (!name) continue;
+    entries.push({
+      name,
+      unit,
+      quantity: toNumberOrNull(record.quantity),
+      calories: toNumberOrNull(record.calories),
+      proteinG: toNumberOrNull(record.proteinG),
+      carbsG: toNumberOrNull(record.carbsG),
+      fatG: toNumberOrNull(record.fatG),
+      fiberG: toNumberOrNull(record.fiberG),
+      sugarG: toNumberOrNull(record.sugarG),
+    });
+  }
+  return entries;
+}
 
 function collectCuratedTags(formData: FormData): string[] {
   const dietary = formData.getAll("dietary").map(String);
@@ -91,6 +132,11 @@ export async function createRecipe(_prevState: RecipeFormState, formData: FormDa
       sugarG,
     ]
   );
+
+  const libraryUpserts = parseLibraryUpserts(formData);
+  if (libraryUpserts.length > 0) {
+    await upsertIngredientLibraryEntries(libraryUpserts);
+  }
 
   revalidatePath("/admin/recipes");
   revalidatePath("/");

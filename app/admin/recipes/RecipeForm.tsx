@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { TAG_VOCABULARY } from "../../lib/filters";
 import { formatIngredientLine, type RecipeIngredient } from "../../lib/recipe-format";
+import IngredientNutrition from "./IngredientNutrition";
 import type { RecipeFormState } from "./actions";
 
 type RecipeFormInitial = {
@@ -39,15 +40,6 @@ type RecipeFormProps = {
   initial?: RecipeFormInitial;
   recipeOptions: RecipeOption[];
 };
-
-const NUTRITION_FIELDS = [
-  { key: "calories", label: "Calories", suffix: "" },
-  { key: "proteinG", label: "Protein", suffix: "g" },
-  { key: "carbsG", label: "Carbs", suffix: "g" },
-  { key: "fatG", label: "Fat", suffix: "g" },
-  { key: "fiberG", label: "Fiber", suffix: "g" },
-  { key: "sugarG", label: "Sugar", suffix: "g" },
-] as const;
 
 const initialState: RecipeFormState = { error: null };
 const inputClass =
@@ -96,6 +88,7 @@ function CheckboxGroup({
 
 export default function RecipeForm({ formAction, submitLabel, initial, recipeOptions }: RecipeFormProps) {
   const [state, action, pending] = useActionState(formAction, initialState);
+  const [servings, setServings] = useState(initial?.servings ?? "");
 
   const ingredientsText = initial?.ingredients.map(formatIngredientLine).join("\n") ?? "";
   const instructionsText = initial?.instructions.join("\n") ?? "";
@@ -161,7 +154,13 @@ export default function RecipeForm({ formAction, submitLabel, initial, recipeOpt
           <input name="totalTime" defaultValue={initial?.totalTime} placeholder="45 min" className={inputClass} />
         </Field>
         <Field label="Servings">
-          <input name="servings" defaultValue={initial?.servings} placeholder="4" className={inputClass} />
+          <input
+            name="servings"
+            value={servings}
+            onChange={(event) => setServings(event.target.value)}
+            placeholder="4"
+            className={inputClass}
+          />
         </Field>
       </div>
 
@@ -186,16 +185,7 @@ export default function RecipeForm({ formAction, submitLabel, initial, recipeOpt
         />
       </div>
 
-      <Field label="Ingredients">
-        <textarea
-          name="ingredientsText"
-          defaultValue={ingredientsText}
-          rows={10}
-          placeholder={"2 cups flour\n1 tsp salt\n3 eggs"}
-          className={inputClass}
-        />
-        <p className="text-xs text-ink/50">One ingredient per line.</p>
-      </Field>
+      <IngredientNutrition initialIngredientsText={ingredientsText} servings={servings} />
 
       <Field label="Instructions">
         <textarea
@@ -217,26 +207,6 @@ export default function RecipeForm({ formAction, submitLabel, initial, recipeOpt
           className={inputClass}
         />
       </Field>
-
-      <fieldset className="flex flex-col gap-3">
-        <legend className="text-sm font-semibold uppercase tracking-wide text-plum">
-          Nutrition <span className="font-normal normal-case text-ink/50">(per serving, optional)</span>
-        </legend>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          {NUTRITION_FIELDS.map((field) => (
-            <Field key={field.key} label={field.suffix ? `${field.label} (${field.suffix})` : field.label}>
-              <input
-                type="number"
-                min="0"
-                step={field.key === "calories" ? "1" : "0.1"}
-                name={field.key}
-                defaultValue={initial?.[field.key] ?? undefined}
-                className={inputClass}
-              />
-            </Field>
-          ))}
-        </div>
-      </fieldset>
 
       <Field label="Photo">
         <div className="flex flex-col gap-3">
