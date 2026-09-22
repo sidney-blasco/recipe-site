@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { pool } from "../../lib/db";
-import { splitLines, textOrNull } from "../../lib/form-fields";
+import { splitLines, textOrNull, numberOrNull } from "../../lib/form-fields";
 import { uploadImageIfProvided } from "../../lib/blob";
 import { requireAdminSession } from "../../lib/require-admin";
 import { getRecipeById, type RecipeDetail } from "../../lib/recipes";
@@ -20,9 +20,9 @@ export type UpdateRecipeInlineResult = {
 
 // Inline "Edit Mode" save from the live recipe page. Deliberately only
 // touches the fields exposed there (title, description, timing, servings,
-// ingredients, instructions, notes, photo) — cuisine, type, and the curated
-// tags are set only at creation time via /admin/recipes/new and are left
-// untouched here.
+// ingredients, instructions, notes, parent recipe, nutrition, photo) —
+// cuisine, type, and the curated tags are set only at creation time via
+// /admin/recipes/new and are left untouched here.
 export async function updateRecipeInline(id: string, formData: FormData): Promise<UpdateRecipeInlineResult> {
   await requireAdminSession();
 
@@ -41,6 +41,14 @@ export async function updateRecipeInline(id: string, formData: FormData): Promis
   const totalTime = textOrNull(formData, "totalTime");
   const servings = textOrNull(formData, "servings");
   const notes = textOrNull(formData, "notes");
+  const parentRecipeId = textOrNull(formData, "parentRecipeId");
+  if (parentRecipeId === id) return { error: "A recipe can't be its own parent.", recipe: null };
+  const calories = numberOrNull(formData, "calories");
+  const proteinG = numberOrNull(formData, "proteinG");
+  const carbsG = numberOrNull(formData, "carbsG");
+  const fatG = numberOrNull(formData, "fatG");
+  const fiberG = numberOrNull(formData, "fiberG");
+  const sugarG = numberOrNull(formData, "sugarG");
 
   let uploadedImageUrl: string | null;
   try {
@@ -53,8 +61,10 @@ export async function updateRecipeInline(id: string, formData: FormData): Promis
     await pool.query(
       `UPDATE recipes
        SET title = $1, description = $2, prep_time = $3, cook_time = $4, total_time = $5,
-           servings = $6, notes = $7, ingredients = $8::jsonb, instructions = $9::jsonb, image_url = $10
-       WHERE id = $11`,
+           servings = $6, notes = $7, ingredients = $8::jsonb, instructions = $9::jsonb, image_url = $10,
+           parent_recipe_id = $11, calories = $12, protein_g = $13, carbs_g = $14, fat_g = $15,
+           fiber_g = $16, sugar_g = $17
+       WHERE id = $18`,
       [
         title,
         description,
@@ -66,6 +76,13 @@ export async function updateRecipeInline(id: string, formData: FormData): Promis
         JSON.stringify(ingredients),
         JSON.stringify(instructions),
         uploadedImageUrl,
+        parentRecipeId,
+        calories,
+        proteinG,
+        carbsG,
+        fatG,
+        fiberG,
+        sugarG,
         id,
       ]
     );
@@ -73,8 +90,10 @@ export async function updateRecipeInline(id: string, formData: FormData): Promis
     await pool.query(
       `UPDATE recipes
        SET title = $1, description = $2, prep_time = $3, cook_time = $4, total_time = $5,
-           servings = $6, notes = $7, ingredients = $8::jsonb, instructions = $9::jsonb
-       WHERE id = $10`,
+           servings = $6, notes = $7, ingredients = $8::jsonb, instructions = $9::jsonb,
+           parent_recipe_id = $10, calories = $11, protein_g = $12, carbs_g = $13, fat_g = $14,
+           fiber_g = $15, sugar_g = $16
+       WHERE id = $17`,
       [
         title,
         description,
@@ -85,6 +104,13 @@ export async function updateRecipeInline(id: string, formData: FormData): Promis
         notes,
         JSON.stringify(ingredients),
         JSON.stringify(instructions),
+        parentRecipeId,
+        calories,
+        proteinG,
+        carbsG,
+        fatG,
+        fiberG,
+        sugarG,
         id,
       ]
     );

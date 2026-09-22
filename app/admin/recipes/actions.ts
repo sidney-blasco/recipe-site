@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { pool } from "../../lib/db";
-import { splitLines, textOrNull } from "../../lib/form-fields";
+import { splitLines, textOrNull, numberOrNull } from "../../lib/form-fields";
 import { uploadImageIfProvided } from "../../lib/blob";
 import { requireAdminSession } from "../../lib/require-admin";
 
@@ -45,6 +45,13 @@ export async function createRecipe(_prevState: RecipeFormState, formData: FormDa
   const totalTime = textOrNull(formData, "totalTime");
   const servings = textOrNull(formData, "servings");
   const notes = textOrNull(formData, "notes");
+  const parentRecipeId = textOrNull(formData, "parentRecipeId");
+  const calories = numberOrNull(formData, "calories");
+  const proteinG = numberOrNull(formData, "proteinG");
+  const carbsG = numberOrNull(formData, "carbsG");
+  const fatG = numberOrNull(formData, "fatG");
+  const fiberG = numberOrNull(formData, "fiberG");
+  const sugarG = numberOrNull(formData, "sugarG");
 
   let imageUrl: string | null;
   try {
@@ -56,9 +63,10 @@ export async function createRecipe(_prevState: RecipeFormState, formData: FormDa
   await pool.query(
     `INSERT INTO recipes (
        title, cuisine, meal_type, tags, ingredients, instructions, image_url,
-       description, prep_time, cook_time, total_time, servings, notes
+       description, prep_time, cook_time, total_time, servings, notes,
+       parent_recipe_id, calories, protein_g, carbs_g, fat_g, fiber_g, sugar_g
      )
-     VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7, $8, $9, $10, $11, $12, $13)`,
+     VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)`,
     [
       title,
       cuisine,
@@ -73,6 +81,13 @@ export async function createRecipe(_prevState: RecipeFormState, formData: FormDa
       totalTime,
       servings,
       notes,
+      parentRecipeId,
+      calories,
+      proteinG,
+      carbsG,
+      fatG,
+      fiberG,
+      sugarG,
     ]
   );
 

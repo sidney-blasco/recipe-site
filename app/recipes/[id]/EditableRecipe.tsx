@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import EditModeBar from "../../components/EditModeBar";
 import EditablePhoto from "../../components/EditablePhoto";
 import IngredientChecklist from "./IngredientChecklist";
 import { formatIngredientLine } from "../../lib/recipe-format";
-import type { RecipeDetail } from "../../lib/recipes";
+import type { RecipeDetail, RecipeOption } from "../../lib/recipes";
 import { updateRecipeInline } from "./actions";
 
 const inputClass =
@@ -44,7 +45,23 @@ type Draft = {
   ingredientsText: string;
   instructionsText: string;
   notes: string;
+  parentRecipeId: string;
+  calories: string;
+  proteinG: string;
+  carbsG: string;
+  fatG: string;
+  fiberG: string;
+  sugarG: string;
 };
+
+const NUTRITION_FIELDS = [
+  { key: "calories", label: "Calories", suffix: "" },
+  { key: "proteinG", label: "Protein", suffix: "g" },
+  { key: "carbsG", label: "Carbs", suffix: "g" },
+  { key: "fatG", label: "Fat", suffix: "g" },
+  { key: "fiberG", label: "Fiber", suffix: "g" },
+  { key: "sugarG", label: "Sugar", suffix: "g" },
+] as const;
 
 function toDraft(recipe: RecipeDetail): Draft {
   return {
@@ -57,6 +74,13 @@ function toDraft(recipe: RecipeDetail): Draft {
     ingredientsText: recipe.ingredients.map(formatIngredientLine).join("\n"),
     instructionsText: recipe.instructions.join("\n"),
     notes: recipe.notes ?? "",
+    parentRecipeId: recipe.parentRecipeId ?? "",
+    calories: recipe.calories !== null ? String(recipe.calories) : "",
+    proteinG: recipe.proteinG !== null ? String(recipe.proteinG) : "",
+    carbsG: recipe.carbsG !== null ? String(recipe.carbsG) : "",
+    fatG: recipe.fatG !== null ? String(recipe.fatG) : "",
+    fiberG: recipe.fiberG !== null ? String(recipe.fiberG) : "",
+    sugarG: recipe.sugarG !== null ? String(recipe.sugarG) : "",
   };
 }
 
@@ -64,10 +88,12 @@ export default function EditableRecipe({
   recipe: initialRecipe,
   dietaryTags,
   isAdmin,
+  recipeOptions,
 }: {
   recipe: RecipeDetail;
   dietaryTags: string[];
   isAdmin: boolean;
+  recipeOptions: RecipeOption[];
 }) {
   const [saved, setSaved] = useState(initialRecipe);
   const [editing, setEditing] = useState(false);
@@ -108,6 +134,13 @@ export default function EditableRecipe({
     formData.set("ingredientsText", draft.ingredientsText);
     formData.set("instructionsText", draft.instructionsText);
     formData.set("notes", draft.notes);
+    formData.set("parentRecipeId", draft.parentRecipeId);
+    formData.set("calories", draft.calories);
+    formData.set("proteinG", draft.proteinG);
+    formData.set("carbsG", draft.carbsG);
+    formData.set("fatG", draft.fatG);
+    formData.set("fiberG", draft.fiberG);
+    formData.set("sugarG", draft.sugarG);
     if (imageFile) formData.set("image", imageFile);
 
     const result = await updateRecipeInline(saved.id, formData);
@@ -152,6 +185,36 @@ export default function EditableRecipe({
         <h1 className="mt-4 text-4xl sm:text-5xl">{saved.title}</h1>
       )}
       <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-mauve">Convivial · Sid</p>
+
+      {editing ? (
+        <label className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+          <span className="font-semibold text-plum">Parent Recipe</span>
+          <select
+            value={draft.parentRecipeId}
+            onChange={(event) => update("parentRecipeId", event.target.value)}
+            className="rounded-lg border border-plum/20 bg-white/70 px-3 py-1.5 text-ink focus:border-plum/50 focus:outline-none"
+          >
+            <option value="">— None —</option>
+            {recipeOptions.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.title}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : (
+        saved.parentRecipeTitle && (
+          <p className="mt-3 text-sm text-ink/70">
+            Part of{" "}
+            <Link
+              href={`/recipes/${saved.parentRecipeId}`}
+              className="text-mauve underline decoration-mauve/40 underline-offset-4 hover:text-plum"
+            >
+              {saved.parentRecipeTitle}
+            </Link>
+          </p>
+        )
+      )}
 
       {editing ? (
         <textarea
@@ -207,6 +270,46 @@ export default function EditableRecipe({
               </div>
             ))}
           </dl>
+        )}
+
+        {(editing || NUTRITION_FIELDS.some((field) => saved[field.key] !== null)) && (
+          <div className="mt-6">
+            <h3 className="text-center text-xs font-semibold uppercase tracking-wide text-mauve">
+              Nutrition <span className="font-normal normal-case text-ink/40">(per serving)</span>
+            </h3>
+            {editing ? (
+              <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3">
+                {NUTRITION_FIELDS.map((field) => (
+                  <label key={field.key} className="flex flex-col gap-1.5 text-sm">
+                    <span className="font-semibold text-plum">
+                      {field.label}
+                      {field.suffix && ` (${field.suffix})`}
+                    </span>
+                    <input
+                      type="number"
+                      min="0"
+                      step={field.key === "calories" ? "1" : "0.1"}
+                      value={draft[field.key]}
+                      onChange={(event) => update(field.key, event.target.value)}
+                      className={inputClass}
+                    />
+                  </label>
+                ))}
+              </div>
+            ) : (
+              <dl className="mt-3 flex flex-wrap justify-center divide-x divide-plum/15 border-y border-plum/15 py-4">
+                {NUTRITION_FIELDS.filter((field) => saved[field.key] !== null).map((field) => (
+                  <div key={field.key} className="flex-1 px-2 text-center">
+                    <dt className="text-xs font-semibold uppercase tracking-wide text-mauve">{field.label}</dt>
+                    <dd className="mt-1 text-ink/85">
+                      {saved[field.key]}
+                      {field.suffix}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </div>
         )}
 
         {dietaryTags.length > 0 && (

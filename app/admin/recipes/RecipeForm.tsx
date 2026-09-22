@@ -22,13 +22,32 @@ type RecipeFormInitial = {
   totalTime: string;
   servings: string;
   notes: string;
+  parentRecipeId: string | null;
+  calories: number | null;
+  proteinG: number | null;
+  carbsG: number | null;
+  fatG: number | null;
+  fiberG: number | null;
+  sugarG: number | null;
 };
+
+type RecipeOption = { id: string; title: string };
 
 type RecipeFormProps = {
   formAction: (prevState: RecipeFormState, formData: FormData) => Promise<RecipeFormState>;
   submitLabel: string;
   initial?: RecipeFormInitial;
+  recipeOptions: RecipeOption[];
 };
+
+const NUTRITION_FIELDS = [
+  { key: "calories", label: "Calories", suffix: "" },
+  { key: "proteinG", label: "Protein", suffix: "g" },
+  { key: "carbsG", label: "Carbs", suffix: "g" },
+  { key: "fatG", label: "Fat", suffix: "g" },
+  { key: "fiberG", label: "Fiber", suffix: "g" },
+  { key: "sugarG", label: "Sugar", suffix: "g" },
+] as const;
 
 const initialState: RecipeFormState = { error: null };
 const inputClass =
@@ -75,7 +94,7 @@ function CheckboxGroup({
   );
 }
 
-export default function RecipeForm({ formAction, submitLabel, initial }: RecipeFormProps) {
+export default function RecipeForm({ formAction, submitLabel, initial, recipeOptions }: RecipeFormProps) {
   const [state, action, pending] = useActionState(formAction, initialState);
 
   const ingredientsText = initial?.ingredients.map(formatIngredientLine).join("\n") ?? "";
@@ -107,6 +126,17 @@ export default function RecipeForm({ formAction, submitLabel, initial }: RecipeF
               </option>
             ))}
           </select>
+        </Field>
+        <Field label="Parent Recipe">
+          <select name="parentRecipeId" defaultValue={initial?.parentRecipeId ?? ""} className={inputClass}>
+            <option value="">— None —</option>
+            {recipeOptions.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.title}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-ink/50">Marks this recipe as a variation of another one.</p>
         </Field>
       </div>
 
@@ -187,6 +217,26 @@ export default function RecipeForm({ formAction, submitLabel, initial }: RecipeF
           className={inputClass}
         />
       </Field>
+
+      <fieldset className="flex flex-col gap-3">
+        <legend className="text-sm font-semibold uppercase tracking-wide text-plum">
+          Nutrition <span className="font-normal normal-case text-ink/50">(per serving, optional)</span>
+        </legend>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          {NUTRITION_FIELDS.map((field) => (
+            <Field key={field.key} label={field.suffix ? `${field.label} (${field.suffix})` : field.label}>
+              <input
+                type="number"
+                min="0"
+                step={field.key === "calories" ? "1" : "0.1"}
+                name={field.key}
+                defaultValue={initial?.[field.key] ?? undefined}
+                className={inputClass}
+              />
+            </Field>
+          ))}
+        </div>
+      </fieldset>
 
       <Field label="Photo">
         <div className="flex flex-col gap-3">

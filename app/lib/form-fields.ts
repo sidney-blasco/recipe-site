@@ -10,3 +10,10 @@ export function textOrNull(formData: FormData, fieldName: string): string | null
   const value = String(formData.get(fieldName) ?? "").trim();
   return value || null;
 }
+
+export function numberOrNull(formData: FormData, fieldName: string): number | null {
+  const value = String(formData.get(fieldName) ?? "").trim();
+  if (!value) return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
