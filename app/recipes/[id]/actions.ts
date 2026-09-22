@@ -53,7 +53,8 @@ export async function updateRecipeInline(id: string, formData: FormData): Promis
   let uploadedImageUrl: string | null;
   try {
     uploadedImageUrl = await uploadImageIfProvided(formData, "image", "recipes");
-  } catch {
+  } catch (error) {
+    console.error("updateRecipeInline: image upload failed", error);
     return { error: "Image upload failed. Please try again.", recipe: null };
   }
 

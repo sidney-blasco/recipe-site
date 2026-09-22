@@ -143,18 +143,32 @@ export default function EditableRecipe({
     formData.set("sugarG", draft.sugarG);
     if (imageFile) formData.set("image", imageFile);
 
-    const result = await updateRecipeInline(saved.id, formData);
-    setSaving(false);
+    try {
+      const result = await updateRecipeInline(saved.id, formData);
 
-    if (result.error || !result.recipe) {
-      setError(result.error ?? "Something went wrong. Please try again.");
-      return;
+      if (result.error || !result.recipe) {
+        setError(result.error ?? "Something went wrong. Please try again.");
+        return;
+      }
+
+      setSaved(result.recipe);
+      setDraft(toDraft(result.recipe));
+      setImageFile(null);
+      setEditing(false);
+    } catch (error) {
+      // Errors that never reach our server action's own try/catch — e.g. the
+      // request body (photo) exceeding Next's Server Action size limit —
+      // reject here instead of returning {error}. Without this catch, the
+      // button was left stuck on "Saving…" forever with no feedback.
+      console.error("Recipe save failed", error);
+      setError(
+        error instanceof Error && /body exceeded/i.test(error.message)
+          ? "That photo is too large. Try a smaller image (under ~4MB)."
+          : "Something went wrong. Please try again."
+      );
+    } finally {
+      setSaving(false);
     }
-
-    setSaved(result.recipe);
-    setDraft(toDraft(result.recipe));
-    setImageFile(null);
-    setEditing(false);
   }
 
   const displayDescription = editing ? draft.description : saved.description;

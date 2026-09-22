@@ -56,7 +56,8 @@ export async function createRecipe(_prevState: RecipeFormState, formData: FormDa
   let imageUrl: string | null;
   try {
     imageUrl = await uploadImageIfProvided(formData, "image", "recipes");
-  } catch {
+  } catch (error) {
+    console.error("createRecipe: image upload failed", error);
     return { error: "Image upload failed. Please try again." };
   }
 
