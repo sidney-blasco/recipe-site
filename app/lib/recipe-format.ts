@@ -59,7 +59,7 @@ const UNIT_ALIAS_GROUPS: [string, string[]][] = [
   ["gal", ["gal", "gallon", "gallons"]],
 ];
 
-const UNIT_ALIASES = new Map<string, string>();
+export const UNIT_ALIASES = new Map<string, string>();
 for (const [canonical, aliases] of UNIT_ALIAS_GROUPS) {
   for (const alias of aliases) UNIT_ALIASES.set(alias, canonical);
 }

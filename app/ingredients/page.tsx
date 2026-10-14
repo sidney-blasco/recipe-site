@@ -59,18 +59,27 @@ export default async function IngredientsPage() {
                 <h2 className="border-b border-plum/15 pb-2 font-display text-2xl text-plum">
                   {group.letter}
                 </h2>
-                <ul className="mt-4 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2">
+                <ul className="mt-4 flex flex-col gap-y-1">
                   {group.ingredients.map((ingredient) => (
-                    <li key={ingredient.name}>
-                      <Link
-                        href={`/?ingredients=${encodeURIComponent(ingredient.name)}`}
-                        className="flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-ink/80 transition-colors hover:bg-lavender hover:text-plum"
-                      >
+                    <li key={ingredient.name} className="rounded-lg px-2 py-1.5">
+                      <div className="flex items-center justify-between gap-3 text-ink/80">
                         <span>{ingredient.name}</span>
                         <span className="text-sm text-ink/40">
-                          {ingredient.count} {ingredient.count === 1 ? "recipe" : "recipes"}
+                          {ingredient.recipes.length} {ingredient.recipes.length === 1 ? "recipe" : "recipes"}
                         </span>
-                      </Link>
+                      </div>
+                      <ul className="mt-1 flex flex-col pl-4">
+                        {ingredient.recipes.map((recipe) => (
+                          <li key={recipe.id}>
+                            <Link
+                              href={`/recipes/${recipe.id}`}
+                              className="block rounded-lg px-2 py-0.5 text-sm text-ink/60 transition-colors hover:bg-lavender hover:text-plum"
+                            >
+                              {recipe.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                     </li>
                   ))}
                 </ul>
