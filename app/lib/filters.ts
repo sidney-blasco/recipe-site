@@ -47,7 +47,7 @@ export type CuratedTagGroupKey = "dietary" | "occasion" | "seasonal" | "skillLev
 // recipe that isn't part of one of these lists surfaces under "Other".
 // Exported so the admin recipe form can render the exact same option lists.
 export const TAG_VOCABULARY: Record<CuratedTagGroupKey, string[]> = {
-  dietary: ["Healthy", "Dairy Free", "Egg Free", "Gluten Free", "Vegan"],
+  dietary: ["Vegan", "Vegetarian", "Gluten Free", "Dairy Free"],
   occasion: ["Birthday", "Dinner Party", "Snack", "Carb Heavy", "Protein Heavy", "Breakfast"],
   seasonal: ["Spring", "Summer", "Fall", "Winter"],
   skillLevel: ["Beginner", "Intermediate", "Advanced"],
