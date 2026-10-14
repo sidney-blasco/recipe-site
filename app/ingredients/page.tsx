@@ -61,25 +61,40 @@ export default async function IngredientsPage() {
                 </h2>
                 <ul className="mt-4 flex flex-col gap-y-1">
                   {group.ingredients.map((ingredient) => (
-                    <li key={ingredient.name} className="rounded-lg px-2 py-1.5">
-                      <div className="flex items-center justify-between gap-3 text-ink/80">
-                        <span>{ingredient.name}</span>
-                        <span className="text-sm text-ink/40">
-                          {ingredient.recipes.length} {ingredient.recipes.length === 1 ? "recipe" : "recipes"}
-                        </span>
-                      </div>
-                      <ul className="mt-1 flex flex-col pl-4">
-                        {ingredient.recipes.map((recipe) => (
-                          <li key={recipe.id}>
-                            <Link
-                              href={`/recipes/${recipe.id}`}
-                              className="block rounded-lg px-2 py-0.5 text-sm text-ink/60 transition-colors hover:bg-lavender hover:text-plum"
-                            >
-                              {recipe.title}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                    <li key={ingredient.name}>
+                      {/* Native <details>: starts collapsed; Enter/Space on the summary toggles it. */}
+                      <details className="group">
+                        <summary className="flex cursor-pointer list-none items-center gap-2 rounded-lg px-2 py-1.5 text-ink/80 transition-colors hover:bg-lavender hover:text-plum focus-visible:outline-2 focus-visible:outline-plum [&::-webkit-details-marker]:hidden">
+                          <svg
+                            aria-hidden="true"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            className="h-4 w-4 shrink-0 text-ink/40 transition-transform group-open:rotate-90"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          <span>
+                            {ingredient.name}{" "}
+                            <span className="text-sm text-ink/40">({ingredient.recipes.length})</span>
+                          </span>
+                        </summary>
+                        <ul className="mt-1 flex flex-col pl-8">
+                          {ingredient.recipes.map((recipe) => (
+                            <li key={recipe.id}>
+                              <Link
+                                href={`/recipes/${recipe.id}`}
+                                className="block rounded-lg px-2 py-0.5 text-sm text-ink/60 transition-colors hover:bg-lavender hover:text-plum"
+                              >
+                                {recipe.title}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </details>
                     </li>
                   ))}
                 </ul>
