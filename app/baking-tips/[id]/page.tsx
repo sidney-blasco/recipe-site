@@ -15,10 +15,10 @@ export default async function TipPage(props: PageProps<"/baking-tips/[id]">) {
   const isAdmin = await checkIsAdmin();
 
   return (
-    <main className="mx-auto max-w-2xl px-6 pb-24 pt-12 sm:px-8">
+    <main className="page max-w-[48rem] pt-6 pb-16">
       <Link
         href="/baking-tips"
-        className="text-sm text-mauve underline decoration-mauve/40 underline-offset-4 hover:text-plum"
+        className="sc no-underline decoration-wine/40 underline-offset-4 hover:text-wine hover:underline"
       >
         ← Baking Tips
       </Link>

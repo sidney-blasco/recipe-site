@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PageHeader from "../components/PageHeader";
 import TipCard from "../components/TipCard";
 import { getTips, placeholderTips, formatTipDate } from "../lib/tips";
 
@@ -7,15 +8,13 @@ export default async function BakingTipsPage() {
   const cards = tips.length > 0 ? tips : placeholderTips;
 
   return (
-    <main className="mx-auto max-w-3xl px-6 pb-24 pt-16 sm:px-8">
-      <div className="text-center">
-        <h1 className="text-4xl sm:text-5xl">Baking Tips</h1>
-        <p className="mt-4 text-lg text-ink/80">
-          Short notes on technique, substitutions, and things I&apos;ve learned the hard way.
-        </p>
-      </div>
+    <main className="page max-w-[52rem] pb-16">
+      <PageHeader
+        title="Baking Tips"
+        dek={<>Short notes on technique, substitutions, and things I&apos;ve learned the hard way.</>}
+      />
 
-      <div className="mt-14 flex flex-col">
+      <div className="mt-12 flex flex-col gap-6">
         {cards.map((tip) => {
           const card = (
             <TipCard
@@ -26,7 +25,7 @@ export default async function BakingTipsPage() {
             />
           );
           return tips.length > 0 ? (
-            <Link key={tip.id} href={`/baking-tips/${tip.id}`}>
+            <Link key={tip.id} href={`/baking-tips/${tip.id}`} className="block rounded-panel no-underline">
               {card}
             </Link>
           ) : (

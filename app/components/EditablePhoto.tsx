@@ -48,7 +48,7 @@ export default function EditablePhoto({
           inputRef.current?.click();
         }
       }}
-      className={`relative w-full overflow-hidden rounded-2xl bg-lavender ${aspectClassName} ${editing ? "cursor-pointer" : ""}`}
+      className={`relative w-full overflow-hidden rounded-photo bg-stone ${aspectClassName} ${editing ? "cursor-pointer" : ""}`}
     >
       {displayUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -59,7 +59,7 @@ export default function EditablePhoto({
 
       {editing && (
         <div className="absolute inset-0 flex items-end justify-center pb-3">
-          <span className="rounded-full bg-ink/70 px-4 py-1.5 text-xs font-semibold text-cream">
+          <span className="rounded-pill bg-ink/75 px-4 py-1.5 text-small text-ground">
             Click to replace photo
           </span>
         </div>

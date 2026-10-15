@@ -7,16 +7,16 @@ type TipCardProps = {
 
 function PlaceholderIcon() {
   return (
-    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-lavender to-mauve/40">
+    <div className="flex h-full w-full items-center justify-center">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={1.5}
+        strokeWidth={1.25}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="h-8 w-8 text-plum/40"
+        className="h-8 w-8 text-ink-faded/50"
         aria-hidden="true"
       >
         <path d="M9 18h6" />
@@ -29,24 +29,24 @@ function PlaceholderIcon() {
 
 export default function TipCard({ title, excerpt, date, imageUrl }: TipCardProps) {
   return (
-    <article className="group flex flex-col gap-5 border-b border-plum/10 py-8 first:pt-0 last:border-0 last:pb-0 sm:flex-row sm:items-start">
-      <div className="aspect-[4/3] w-full shrink-0 overflow-hidden rounded-2xl bg-lavender sm:w-44">
+    <article className="flex flex-col gap-5 rounded-panel bg-sage p-3 transition-colors duration-200 hover:bg-blush sm:flex-row sm:items-start">
+      <div className="aspect-[4/3] w-full shrink-0 overflow-hidden rounded-photo bg-ground sm:w-48">
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={imageUrl}
             alt={title}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full object-cover"
           />
         ) : (
           <PlaceholderIcon />
         )}
       </div>
 
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-semibold uppercase tracking-wide text-mauve">{date}</span>
-        <h2 className="font-display text-2xl text-plum">{title}</h2>
-        <p className="text-ink/80">{excerpt}</p>
+      <div className="flex flex-col gap-1 px-2 pb-2 sm:px-0 sm:pt-2 sm:pr-4">
+        <span className="sc text-[0.95rem]">{date}</span>
+        <h2 className="m-0 text-[1.6rem] leading-[1.15] text-ink">{title}</h2>
+        <p className="mt-1 mb-0 italic text-ink-faded">{excerpt}</p>
       </div>
     </article>
   );

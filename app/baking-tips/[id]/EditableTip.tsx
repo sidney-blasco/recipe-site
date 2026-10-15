@@ -7,21 +7,20 @@ import { formatDate } from "../../lib/format-date";
 import type { Tip } from "../../lib/tips";
 import { updateTipInline } from "./actions";
 
-const inputClass =
-  "w-full rounded-lg border border-plum/20 bg-white/70 px-3 py-2 text-ink placeholder:text-ink/40 focus:border-plum/50 focus:outline-none";
+const inputClass = "field";
 
 function PlaceholderImage() {
   return (
-    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-lavender to-mauve/40">
+    <div className="flex h-full w-full items-center justify-center bg-stone">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={1.5}
+        strokeWidth={1.25}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="h-14 w-14 text-plum/40"
+        className="h-14 w-14 text-ink-faded/50"
         aria-hidden="true"
       >
         <path d="M9 18h6" />
@@ -86,30 +85,28 @@ export default function EditableTip({ tip: initialTip, isAdmin }: { tip: Tip; is
 
   return (
     <>
-      <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-mauve">
-        {formatDate(saved.createdAt)}
-      </p>
+      <p className="sc mt-8 mb-2 text-center text-[1.05rem]">{formatDate(saved.createdAt)}</p>
 
       {editing ? (
         <input
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-          className={`${inputClass} mt-2 font-display text-4xl sm:text-5xl`}
+          className={`${inputClass} display text-center text-h1 leading-[1.02]`}
         />
       ) : (
-        <h1 className="mt-2 text-4xl sm:text-5xl">{saved.title}</h1>
+        <h1 className="m-0 text-center text-h1 leading-[1.02]">{saved.title}</h1>
       )}
 
-      <div className="mt-8">
+      <figure className="mt-8 mb-0 rounded-panel bg-mat p-[clamp(.9rem,2.5vw,1.6rem)]">
         <EditablePhoto
           editing={editing}
           imageUrl={saved.imageUrl}
           alt={saved.title}
-          aspectClassName="aspect-[16/9]"
+          aspectClassName="aspect-[3/2]"
           placeholder={<PlaceholderImage />}
           onFileSelected={setImageFile}
         />
-      </div>
+      </figure>
 
       {editing ? (
         <textarea
@@ -117,13 +114,17 @@ export default function EditableTip({ tip: initialTip, isAdmin }: { tip: Tip; is
           onChange={(event) => setBody(event.target.value)}
           rows={12}
           placeholder="Write the tip here. Leave a blank line between paragraphs."
-          className={`${inputClass} mt-8 text-lg`}
+          className={`${inputClass} mt-8`}
         />
       ) : (
-        <div className="mt-8 flex flex-col gap-4 text-lg text-ink/85">
-          {paragraphs.map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
-          ))}
+        <div className="panel mt-8 bg-sage">
+          <div className="mx-auto max-w-measure">
+            {paragraphs.map((paragraph, index) => (
+              <p key={index} className={`mt-0 mb-[1.1rem] last:mb-0 ${index === 0 ? "drop-cap" : ""}`}>
+                {paragraph}
+              </p>
+            ))}
+          </div>
         </div>
       )}
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PageHeader from "../components/PageHeader";
 import { getRecipes } from "../lib/recipes";
 import { buildIngredientIndex } from "../lib/ingredients";
 
@@ -10,19 +11,16 @@ export default async function IngredientsPage() {
   const availableLetters = new Set(groups.map((group) => group.letter));
 
   return (
-    <main className="mx-auto max-w-4xl px-6 pb-24 pt-16 sm:px-8">
-      <div className="text-center">
-        <h1 className="text-4xl sm:text-5xl">Ingredient Index</h1>
-        <p className="mt-4 text-lg text-ink/80">
-          Every ingredient across the collection. Jump to a letter, or tap an
-          ingredient to see the recipes that use it.
-        </p>
-      </div>
+    <main className="page pb-16">
+      <PageHeader
+        title="Ingredient Index"
+        dek="Every ingredient across the collection. Jump to a letter, or tap an ingredient to see the recipes that use it."
+      />
 
       {groups.length === 0 ? (
-        <div className="mt-16 rounded-2xl border border-dashed border-plum/20 px-6 py-16 text-center">
-          <p className="text-lg text-plum">No ingredients yet.</p>
-          <p className="mt-2 text-sm text-ink/60">
+        <div className="panel mt-12 bg-sage text-center">
+          <p className="display-it m-0 text-h4 text-ink">No ingredients yet.</p>
+          <p className="mt-2 mb-0 text-small italic text-ink-faded">
             Add a recipe with some ingredients and they&apos;ll show up here.
           </p>
         </div>
@@ -30,14 +28,14 @@ export default async function IngredientsPage() {
         <>
           <nav
             aria-label="Jump to letter"
-            className="sticky top-0 z-10 -mx-6 mt-10 flex flex-wrap justify-center gap-1 bg-cream/95 px-6 py-3 backdrop-blur sm:mx-0 sm:rounded-full sm:border sm:border-plum/10"
+            className="z-10 mt-10 flex flex-wrap justify-center gap-0.5 rounded-panel bg-sage px-3 py-2.5 lg:sticky lg:top-[4.5rem]"
           >
             {ALL_LETTERS.map((letter) =>
               availableLetters.has(letter) ? (
                 <a
                   key={letter}
                   href={`#letter-${letter}`}
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold text-plum transition-colors hover:bg-lavender"
+                  className="display flex size-8 items-center justify-center rounded-pill text-[1.1rem] text-wine no-underline transition-colors duration-200 hover:bg-blush"
                 >
                   {letter}
                 </a>
@@ -45,7 +43,7 @@ export default async function IngredientsPage() {
                 <span
                   key={letter}
                   aria-hidden="true"
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-ink/25"
+                  className="display flex size-8 items-center justify-center rounded-pill text-[1.1rem] text-ink-faded/40"
                 >
                   {letter}
                 </span>
@@ -53,53 +51,53 @@ export default async function IngredientsPage() {
             )}
           </nav>
 
-          <div className="mt-10 flex flex-col gap-10">
-            {groups.map((group) => (
-              <section key={group.letter} id={`letter-${group.letter}`} className="scroll-mt-24">
-                <h2 className="border-b border-plum/15 pb-2 font-display text-2xl text-plum">
-                  {group.letter}
-                </h2>
-                <ul className="mt-4 flex flex-col gap-y-1">
-                  {group.ingredients.map((ingredient) => (
-                    <li key={ingredient.name}>
-                      {/* Native <details>: starts collapsed; Enter/Space on the summary toggles it. */}
-                      <details className="group">
-                        <summary className="flex cursor-pointer list-none items-center gap-2 rounded-lg px-2 py-1.5 text-ink/80 transition-colors hover:bg-lavender hover:text-plum focus-visible:outline-2 focus-visible:outline-plum [&::-webkit-details-marker]:hidden">
-                          <svg
-                            aria-hidden="true"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            className="h-4 w-4 shrink-0 text-ink/40 transition-transform group-open:rotate-90"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                          <span>
-                            {ingredient.name}{" "}
-                            <span className="text-sm text-ink/40">({ingredient.recipes.length})</span>
-                          </span>
-                        </summary>
-                        <ul className="mt-1 flex flex-col pl-8">
-                          {ingredient.recipes.map((recipe) => (
-                            <li key={recipe.id}>
-                              <Link
-                                href={`/recipes/${recipe.id}`}
-                                className="block rounded-lg px-2 py-0.5 text-sm text-ink/60 transition-colors hover:bg-lavender hover:text-plum"
-                              >
-                                {recipe.title}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </details>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
+          <div className="panel mt-6 bg-sage">
+            <div className="mx-auto flex max-w-[40rem] flex-col gap-10">
+              {groups.map((group) => (
+                <section key={group.letter} id={`letter-${group.letter}`} className="scroll-mt-24 lg:scroll-mt-40">
+                  <h2 className="m-0 text-h3 leading-none text-wine">{group.letter}</h2>
+                  <ul className="mt-3 flex flex-col">
+                    {group.ingredients.map((ingredient) => (
+                      <li key={ingredient.name} className="dotted-rule">
+                        {/* Native <details>: starts collapsed; Enter/Space on the summary toggles it. */}
+                        <details className="group">
+                          <summary className="flex cursor-pointer list-none items-center gap-2 rounded-[12px] px-2 py-1.5 transition-colors duration-200 hover:bg-blush [&::-webkit-details-marker]:hidden">
+                            <svg
+                              aria-hidden="true"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              className="h-4 w-4 shrink-0 text-ink-faded group-open:rotate-90"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span>
+                              {ingredient.name}{" "}
+                              <span className="text-small text-ink-faded">({ingredient.recipes.length})</span>
+                            </span>
+                          </summary>
+                          <ul className="mt-0.5 mb-2 flex flex-col pl-8">
+                            {ingredient.recipes.map((recipe) => (
+                              <li key={recipe.id}>
+                                <Link
+                                  href={`/recipes/${recipe.id}`}
+                                  className="display-it block rounded-[12px] px-2 py-0.5 text-[1.05rem] no-underline transition-colors duration-200 hover:bg-blush"
+                                >
+                                  {recipe.title}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </details>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
           </div>
         </>
       )}

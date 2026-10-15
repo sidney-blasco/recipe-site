@@ -9,27 +9,22 @@ type PhotoGalleryProps = {
 };
 
 // Cycled purely for visual variety between placeholder tiles — not a category signal.
-const PLACEHOLDER_GRADIENTS = [
-  "from-lavender to-mauve/40",
-  "from-blush to-lilac/50",
-  "from-periwinkle/40 to-lavender",
-  "from-mauve/30 to-blush",
-];
+const PLACEHOLDER_GROUNDS = ["bg-stone", "bg-blush", "bg-sage", "bg-ground"];
 
 function PlaceholderTile({ index }: { index: number }) {
   return (
     <div
-      className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${PLACEHOLDER_GRADIENTS[index % PLACEHOLDER_GRADIENTS.length]}`}
+      className={`flex h-full w-full items-center justify-center ${PLACEHOLDER_GROUNDS[index % PLACEHOLDER_GROUNDS.length]}`}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={1.5}
+        strokeWidth={1.25}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="h-8 w-8 text-plum/40"
+        className="h-8 w-8 text-ink-faded/50"
         aria-hidden="true"
       >
         <rect x="3" y="5" width="18" height="14" rx="2" />
@@ -109,8 +104,8 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
 
   if (photos.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-plum/20 px-6 py-16 text-center">
-        <p className="text-lg text-plum">No photos yet.</p>
+      <div className="panel bg-stone text-center">
+        <p className="display-it m-0 text-h4 text-ink">No photos yet.</p>
       </div>
     );
   }
@@ -119,24 +114,20 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
         {photos.map((photo, index) => (
           <button
             key={photo.id}
             type="button"
             onClick={() => setOpenIndex(index)}
             aria-label={`View ${photo.alt} larger`}
-            className="group aspect-square overflow-hidden rounded-2xl bg-lavender focus:outline-none focus-visible:ring-2 focus-visible:ring-plum/50"
+            className="block cursor-zoom-in rounded-[22px] bg-mat p-2.5 transition-colors duration-300 hover:bg-mat-wine"
           >
             {photo.src ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={photo.src}
-                alt={photo.alt}
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
+              <img src={photo.src} alt={photo.alt} className="aspect-square w-full rounded-[12px] object-cover" />
             ) : (
-              <div className="h-full w-full transition-transform duration-300 group-hover:scale-105">
+              <div className="aspect-square w-full overflow-hidden rounded-[12px]">
                 <PlaceholderTile index={index} />
               </div>
             )}
@@ -150,7 +141,7 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
           aria-modal="true"
           aria-label={activePhoto.alt}
           onClick={() => setOpenIndex(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/85 px-4 py-10"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/90 px-4 py-10"
         >
           <button
             type="button"
@@ -159,7 +150,7 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
               setOpenIndex(null);
             }}
             aria-label="Close"
-            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-cream transition-colors hover:bg-white/20"
+            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-pill bg-ground/10 text-ground transition-colors duration-200 hover:bg-ground/20"
           >
             <CloseIcon />
           </button>
@@ -173,7 +164,7 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
                   showPrev();
                 }}
                 aria-label="Previous photo"
-                className="absolute left-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-cream transition-colors hover:bg-white/20 sm:left-4"
+                className="absolute left-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-pill bg-ground/10 text-ground transition-colors duration-200 hover:bg-ground/20 sm:left-4"
               >
                 <ChevronIcon direction="left" />
               </button>
@@ -184,18 +175,18 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
                   showNext();
                 }}
                 aria-label="Next photo"
-                className="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-cream transition-colors hover:bg-white/20 sm:right-4"
+                className="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-pill bg-ground/10 text-ground transition-colors duration-200 hover:bg-ground/20 sm:right-4"
               >
                 <ChevronIcon direction="right" />
               </button>
             </>
           )}
 
-          <div
-            className="max-h-[80vh] w-full max-w-2xl overflow-hidden rounded-2xl bg-lavender"
+          <figure
+            className="m-0 w-full max-w-2xl rounded-panel bg-mat p-[clamp(.9rem,2.5vw,1.6rem)]"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="aspect-[4/3] w-full">
+            <div className="aspect-[4/3] max-h-[70vh] w-full overflow-hidden rounded-photo">
               {activePhoto.src ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={activePhoto.src} alt={activePhoto.alt} className="h-full w-full object-cover" />
@@ -203,7 +194,8 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
                 <PlaceholderTile index={openIndex ?? 0} />
               )}
             </div>
-          </div>
+            <figcaption className="mx-1.5 mt-3 text-small italic text-mat-text">{activePhoto.alt}</figcaption>
+          </figure>
         </div>
       )}
     </>

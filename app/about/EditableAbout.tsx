@@ -6,21 +6,20 @@ import EditablePhoto from "../components/EditablePhoto";
 import type { AboutContent } from "../lib/about";
 import { updateAboutInline } from "./actions";
 
-const inputClass =
-  "w-full rounded-lg border border-plum/20 bg-white/70 px-3 py-2 text-ink placeholder:text-ink/40 focus:border-plum/50 focus:outline-none";
+const inputClass = "field";
 
 function PlaceholderPortrait() {
   return (
-    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-lavender to-mauve/40">
+    <div className="flex h-full w-full items-center justify-center bg-stone">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={1.5}
+        strokeWidth={1.25}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="h-16 w-16 text-plum/40"
+        className="h-16 w-16 text-ink-faded/50"
         aria-hidden="true"
       >
         <circle cx="12" cy="8" r="4" />
@@ -79,7 +78,7 @@ export default function EditableAbout({ about: initialAbout, isAdmin }: { about:
 
   return (
     <>
-      <div className="mt-10 lg:grid lg:grid-cols-[minmax(0,280px)_1fr] lg:items-start lg:gap-12">
+      <div className="panel mt-10 bg-blush lg:grid lg:grid-cols-[minmax(0,280px)_1fr] lg:items-start lg:gap-12">
         <div className="mx-auto w-56 sm:w-64 lg:mx-0 lg:w-full">
           <EditablePhoto
             editing={editing}
@@ -90,7 +89,7 @@ export default function EditableAbout({ about: initialAbout, isAdmin }: { about:
             onFileSelected={setImageFile}
           />
           {!saved.imageUrl && !editing && (
-            <p className="mt-2 text-center text-xs text-ink/40 lg:text-left">Photo coming soon</p>
+            <p className="mt-2 mb-0 text-center text-small italic text-ink-faded lg:text-left">Photo coming soon</p>
           )}
         </div>
 
@@ -100,12 +99,14 @@ export default function EditableAbout({ about: initialAbout, isAdmin }: { about:
               value={body}
               onChange={(event) => setBody(event.target.value)}
               rows={10}
-              className={`${inputClass} text-lg`}
+              className={inputClass}
             />
           ) : (
-            <div className="flex flex-col gap-4 text-lg text-ink/80">
+            <div className="max-w-measure">
               {paragraphs.map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
+                <p key={index} className="mt-0 mb-[1.1rem] last:mb-0">
+                  {paragraph}
+                </p>
               ))}
             </div>
           )}
