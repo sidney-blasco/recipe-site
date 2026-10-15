@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" data-mat="olive">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Convivial — Specimen v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..700,0..100,0..1&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Homemade+Apple&display=swap" rel="stylesheet">
+<style>
+  /* ============ TOKENS ============ */
+  :root {
+    /* grounds: one per kind of section */
+    --ground: #F2F1ED;       /* page */
+    --stone: #E9E6DF;        /* recipe card */
+    --blush: #F0E4E0;        /* wine-tinted panel */
+    --sage: #E6E6D8;         /* olive-tinted panel */
+
+    /* photo mats */
+    --mat-sage: #CFCFB6;
+    --mat-olive: #6F7046;
+    --mat-wine: #7A2C35;
+
+    --ink: #2A221C;
+    --ink-faded: #6B6259;
+    --wine: #6A1E28;
+    --wine-pressed: #4E141C;
+    --olive: #5F6136;
+    --pen: #33456A;
+    --hairline: rgba(42, 34, 28, .22);
+
+    --f-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+    --f-body: "Libre Caslon Text", "Iowan Old Style", Georgia, serif;
+    --f-hand: "Homemade Apple", "Segoe Script", "Bradley Hand", cursive;
+    --display-tune: "SOFT" 60, "WONK" 0;
+
+    /* radii: big and loose for panels, smaller for things inside them */
+    --r-panel: 28px;
+    --r-photo: 16px;
+    --r-pill: 999px;
+
+    --t-small: .833rem;
+    --t-body: 1.125rem;
+    --t-h4: 1.5rem;
+    --t-h3: 2rem;
+    --t-h2: 2.666rem;
+    --t-h1: clamp(2.6rem, 6vw, 3.55rem);
+    --t-display: clamp(3.6rem, 12vw, 7.5rem);
+    --measure: 34rem;
+    color-scheme: light;
+  }
+  :root[data-mat="sage"]  { --mat: var(--mat-sage);  --mat-text: #4A4A33; }
+  :root[data-mat="olive"] { --mat: var(--mat-olive); --mat-text: #EDEBDD; }
+  :root[data-mat="wine"]  { --mat: var(--mat-wine);  --mat-text: #F3E6E3; }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #1F1D1B; --stone: #282522; --blush: #2E2220; --sage: #26271F;
+      --mat-sage: #3D3E30; --mat-olive: #4B4C30; --mat-wine: #5A222A;
+      --ink: #ECE7DE; --ink-faded: #B2AAA0; --wine: #D2808A; --wine-pressed: #E7A0A8;
+      --olive: #B3B583; --pen: #A3B5D6; --hairline: rgba(236,231,222,.2);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #1F1D1B; --stone: #282522; --blush: #2E2220; --sage: #26271F;
+    --mat-sage: #3D3E30; --mat-olive: #4B4C30; --mat-wine: #5A222A;
+    --ink: #ECE7DE; --ink-faded: #B2AAA0; --wine: #D2808A; --wine-pressed: #E7A0A8;
+    --olive: #B3B583; --pen: #A3B5D6; --hairline: rgba(236,231,222,.2);
+    color-scheme: dark;
+  }
+
+  /* ============ BASE ============ */
+  :root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); background: var(--ground); }
+  *, *::before, *::after { box-sizing: inherit; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--f-body); font-size: var(--t-body); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 21; background: var(--ground); }
+  img { max-width: 100%; }
+  a { color: var(--wine); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  :focus-visible { outline: 2px solid var(--wine); outline-offset: 3px; }
+
+  .display { font-family: var(--f-display); font-weight: 420; font-variation-settings: var(--display-tune); }
+  .display-it { font-family: var(--f-display); font-style: italic; font-weight: 380; font-variation-settings: var(--display-tune); }
+  .sc { font-family: var(--f-body); font-variant-caps: small-caps; letter-spacing: .05em; font-size: 1.05rem; color: var(--ink-faded); }
+
+  /* soft dotted rule: round dots, not a hard line */
+  .dots { height: 6px; border: 0; margin: 0;
+    background: radial-gradient(circle, var(--hairline) 1.4px, transparent 1.8px) center / 10px 6px repeat-x; }
+
+  /* ============ CONTROLS ============ */
+  .controls {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--ground);
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .5rem .75rem;
+    padding: .7rem 1rem;
+  }
+  .controls .lbl { font-size: var(--t-small); font-style: italic; color: var(--ink-faded); }
+  .seg { display: inline-flex; background: var(--stone); border-radius: var(--r-pill); padding: 3px; }
+  .seg button, .pill {
+    font-family: var(--f-body); font-size: .9rem; color: var(--ink); background: transparent;
+    border: 0; border-radius: var(--r-pill); padding: .4rem .95rem; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--wine); color: var(--ground); }
+  .seg button:hover:not([aria-pressed="true"]) { background: var(--blush); }
+  .pill { background: var(--stone); }
+  .pill:hover { background: var(--blush); }
+
+  /* ============ LAYOUT ============ */
+  .page { max-width: 66rem; margin: 0 auto; padding: 0 clamp(1rem, 3vw, 2rem) 4rem; }
+  .panel { position: relative; border-radius: var(--r-panel); padding: clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 5vw, 3.5rem); margin-top: 1.5rem; }
+  .panel.ground { background: var(--ground); }
+  .panel.blush { background: var(--blush); }
+  .panel.sage { background: var(--sage); }
+  .panel.stone { background: var(--stone); }
+
+  /* curl corners with dots */
+  .corner { position: absolute; width: 44px; height: 44px; color: var(--wine); pointer-events: none; opacity: .85; }
+  .corner svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .corner.tl { top: 14px; left: 14px; }
+  .corner.tr { top: 14px; right: 14px; transform: scaleX(-1); }
+  .corner.bl { bottom: 14px; left: 14px; transform: scaleY(-1); }
+  .corner.br { bottom: 14px; right: 14px; transform: scale(-1, -1); }
+
+  .flourish { display: flex; justify-content: center; margin: 1.6rem 0; color: var(--wine); }
+
+  /* ============ TITLE ============ */
+  .title-page { text-align: center; padding-top: clamp(3rem, 8vw, 5rem); padding-bottom: clamp(2.5rem, 6vw, 4rem); }
+  .title-page .sc { display: block; margin-bottom: 1.2rem; }
+  .wordmark { font-size: var(--t-display); line-height: .95; letter-spacing: -.015em; color: var(--wine); margin: 0; }
+  .title-page .sub { font-size: var(--t-h4); margin: 1rem auto 0; max-width: 26rem; line-height: 1.35; }
+
+  /* ============ SECTIONS ============ */
+  .section-head { font-size: var(--t-h2); line-height: 1.1; margin: 0 0 .4rem; }
+  .section-intro { color: var(--ink-faded); font-style: italic; max-width: var(--measure); margin: 0 0 2rem; }
+
+  .hand { display: grid; grid-template-columns: 11rem 1fr; gap: 2rem; padding: 1.6rem 0; }
+  .hand + .hand { border-top: 0; background: none; }
+  .hand + .hand::before { content: ""; grid-column: 1 / -1; height: 6px; margin: -1.6rem 0 .4rem;
+    background: radial-gradient(circle, var(--hairline) 1.4px, transparent 1.8px) center / 10px 6px repeat-x; }
+  .hand .spec { font-size: var(--t-small); color: var(--ink-faded); line-height: 1.5; }
+  .hand .spec strong { display: block; font-weight: 400; color: var(--ink); margin-bottom: .3rem; }
+  .sample-display { font-size: var(--t-h1); line-height: 1.05; margin: 0; }
+  .sample-display .display-it { display: block; font-size: .55em; margin-top: .5rem; color: var(--ink-faded); }
+  .sample-body { max-width: var(--measure); margin: 0; }
+  .sample-hand { font-family: var(--f-hand); color: var(--pen); font-size: 1.35rem; line-height: 1.9; margin: 0; transform: rotate(-1.5deg); transform-origin: left; }
+
+  .ladder { list-style: none; padding: 0; margin: 0; }
+  .ladder li { display: grid; grid-template-columns: 7.5rem 1fr; align-items: baseline; gap: 1.5rem; padding: .6rem 0;
+    background: radial-gradient(circle, var(--hairline) 1.2px, transparent 1.6px) bottom / 9px 4px repeat-x; }
+  .ladder .k { font-size: var(--t-small); color: var(--ink-faded); white-space: nowrap; }
+  .ladder .v { line-height: 1.2; overflow-x: auto; white-space: nowrap; }
+
+  .inks { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: 1.5rem 1.25rem; }
+  .ink { margin: 0; }
+  .ink .chip { aspect-ratio: 1; border-radius: 50% 50% 46% 54% / 52% 48% 52% 48%; margin-bottom: .7rem; box-shadow: inset 0 0 0 1px var(--hairline); }
+  .ink figcaption { font-size: var(--t-small); line-height: 1.45; color: var(--ink-faded); }
+  .ink figcaption b { display: block; font-weight: 400; font-size: 1rem; color: var(--ink); }
+
+  /* ============ RECIPE ============ */
+  .recipe { display: grid; grid-template-columns: minmax(0, 1fr) 12rem; gap: 2.5rem; }
+  .recipe-head { grid-column: 1 / -1; text-align: center; padding-top: 1rem; }
+  .recipe-head .sc { display: block; margin-bottom: .6rem; }
+  .recipe-title { font-size: var(--t-h1); line-height: 1.02; margin: 0; }
+  .recipe-dek { color: var(--ink-faded); max-width: 30rem; margin: .9rem auto 0; font-size: 1.25rem; }
+
+  .particulars { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; margin: 0; }
+  .particulars div { background: var(--ground); border-radius: var(--r-pill); padding: .55rem 1.3rem; text-align: center; }
+  .particulars dt { display: inline; font-size: 1rem; }
+  .particulars dd { display: inline; margin: 0 0 0 .5rem; }
+
+  .plate { grid-column: 1 / -1; margin: 0; background: var(--mat); border-radius: var(--r-panel); padding: clamp(.9rem, 2.5vw, 1.6rem); transition: background .35s ease; }
+  .plate .frame { aspect-ratio: 3/2; border-radius: var(--r-photo); background: radial-gradient(ellipse at 40% 38%, #6b4a3a 0%, #2c1e17 55%, #1a120e 100%); display: grid; place-items: center; }
+  .plate .frame span { font-family: var(--f-display); font-style: italic; color: #e2d4ba; font-size: 1.15rem; }
+  .plate figcaption { font-size: var(--t-small); font-style: italic; color: var(--mat-text); margin: .8rem .4rem 0; }
+
+  .recipe-body p { max-width: var(--measure); margin: 0 0 1.1rem; }
+  .recipe-body p:first-of-type::first-letter {
+    font-family: var(--f-display); font-variation-settings: var(--display-tune); font-weight: 420;
+    float: left; font-size: 4.1em; line-height: .8; padding: .06em .1em 0 0; color: var(--wine);
+  }
+  .recipe-body h3 { font-size: var(--t-h3); margin: 2.2rem 0 .8rem; line-height: 1.1; }
+  .ingredients { list-style: none; padding: 0; margin: 0; max-width: var(--measure); }
+  .ingredients li { display: grid; grid-template-columns: 6.5rem 1fr; gap: 1rem; padding: .4rem 0;
+    background: radial-gradient(circle, var(--hairline) 1.2px, transparent 1.6px) bottom / 9px 4px repeat-x; }
+  .ingredients .q { color: var(--wine); }
+
+  .margin-note { align-self: start; margin-top: 4.5rem; position: sticky; top: calc(5rem + env(safe-area-inset-top, 0px));
+    background: var(--ground); border-radius: 18px 22px 16px 24px; padding: 1.2rem 1.1rem 1rem; transform: rotate(-1.5deg); }
+  .margin-note p { font-family: var(--f-hand); color: var(--pen); font-size: 1rem; line-height: 1.95; margin: 0; }
+  .margin-note .placeholder { display: block; font-style: italic; font-size: .72rem; color: var(--ink-faded); margin-top: 1rem; }
+
+  .colophon { text-align: center; padding: 3rem 1rem 1rem; }
+  .colophon p { font-size: var(--t-small); color: var(--ink-faded); font-style: italic; max-width: 30rem; margin: .8rem auto 0; }
+
+  @media (max-width: 760px) {
+    .hand { grid-template-columns: 1fr; gap: .9rem; }
+    .recipe { grid-template-columns: 1fr; }
+    .margin-note { position: static; margin: .5rem 0 0 .75rem; max-width: 18rem; }
+    .ladder li { grid-template-columns: 1fr; gap: .1rem; }
+    .corner { width: 30px; height: 30px; }
+    :root { --r-panel: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .plate { transition: none; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- loose curl corner with two dots -->
+    <symbol id="curl" viewBox="0 0 44 44">
+      <path d="M4 40 C4 20 10 6 34 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M11 30 C12 20 17 13 25 11" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".7"/>
+      <circle cx="39" cy="4" r="2.1" fill="currentColor"/>
+      <circle cx="4" cy="40" r="2.1" fill="currentColor"/>
+      <circle cx="19" cy="21" r="1.4" fill="currentColor" opacity=".8"/>
+    </symbol>
+    <!-- section flourish: soft sprig with dots -->
+    <symbol id="sprig" viewBox="0 0 120 20">
+      <path d="M8 10 C30 2 44 18 60 10 C76 2 90 18 112 10" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      <circle cx="3" cy="10" r="2" fill="currentColor"/>
+      <circle cx="117" cy="10" r="2" fill="currentColor"/>
+      <circle cx="60" cy="10" r="2.6" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="controls" role="toolbar" aria-label="Specimen controls">
+  <span class="lbl">Photo mat</span>
+  <div class="seg" id="matSeg">
+    <button type="button" data-v="sage" aria-pressed="false">Sage</button>
+    <button type="button" data-v="olive" aria-pressed="true">Olive</button>
+    <button type="button" data-v="wine" aria-pressed="false">Wine</button>
+  </div>
+  <button class="pill" type="button" id="themeToggle">Lamplight</button>
+</div>
+
+<main class="page">
+
+  <header class="panel ground title-page">
+    <span class="corner tl"><svg><use href="#curl"/></svg></span>
+    <span class="corner tr"><svg><use href="#curl"/></svg></span>
+    <span class="corner bl"><svg><use href="#curl"/></svg></span>
+    <span class="corner br"><svg><use href="#curl"/></svg></span>
+    <span class="sc">Specimen, third proof</span>
+    <h1 class="wordmark display">Convivial</h1>
+    <div class="flourish" aria-hidden="true"><svg width="120" height="20"><use href="#sprig"/></svg></div>
+    <p class="sub display-it">A kept book of recipes for the shared table</p>
+  </header>
+
+  <section class="panel blush" aria-labelledby="hands-h">
+    <h2 class="section-head display" id="hands-h">Three hands on one page</h2>
+    <p class="section-intro">The printer sets the page, the trattoria warms it, and the cook writes in the margins.</p>
+    <div class="hand">
+      <div class="spec"><strong class="sc">The printer</strong>Fraunces, softened. Headlines, the wordmark, drop caps.</div>
+      <p class="sample-display display">Devil's Food Cake<span class="display-it">with a dark cocoa buttercream</span></p>
+    </div>
+    <div class="hand">
+      <div class="spec"><strong class="sc">The reader</strong>Libre Caslon Text, 18 / 30px. About 66 characters to a line.</div>
+      <p class="sample-body">This is the cake that taught me the difference between cocoa and good cocoa. It comes out of the oven tall and almost black, and it tastes the way a birthday is supposed to feel: a little too much, in the best possible way.</p>
+    </div>
+    <div class="hand">
+      <div class="spec"><strong class="sc">The cook</strong>Pen-blue handwriting for margins and asides. Placeholder until your cards are scanned.</div>
+      <p class="sample-hand">Use the good cocoa. Trust me on this one.</p>
+    </div>
+  </section>
+
+  <section class="panel ground" aria-labelledby="scale-h">
+    <h2 class="section-head display" id="scale-h">The scale</h2>
+    <p class="section-intro">A perfect fourth (1.333) from an 18px body.</p>
+    <ul class="ladder">
+      <li><span class="k">Display, 120px</span><span class="v display" style="font-size:var(--t-display);color:var(--wine)">Convivial</span></li>
+      <li><span class="k">Recipe title, 57px</span><span class="v display" style="font-size:var(--t-h1)">Sunday Gravy</span></li>
+      <li><span class="k">Section, 43px</span><span class="v display" style="font-size:var(--t-h2)">On Butter</span></li>
+      <li><span class="k">Recipe part, 32px</span><span class="v display" style="font-size:var(--t-h3)">For the frosting</span></li>
+      <li><span class="k">Dek, 24px italic</span><span class="v display-it" style="font-size:var(--t-h4)">a cake for no particular occasion</span></li>
+      <li><span class="k">Body, 18px</span><span class="v">Cream the butter until pale and light.</span></li>
+      <li><span class="k">Small caps</span><span class="v sc">Serves eight, with seconds</span></li>
+      <li><span class="k">Caption, 15px</span><span class="v" style="font-size:var(--t-small);font-style:italic;color:var(--ink-faded)">Photographed by the window, late afternoon.</span></li>
+    </ul>
+  </section>
+
+  <section class="panel sage" aria-labelledby="ink-h">
+    <h2 class="section-head display" id="ink-h">The grounds and inks</h2>
+    <p class="section-intro">Each kind of section gets its own ground, so the page moves in gentle bands of color instead of one flat sheet.</p>
+    <div class="inks">
+      <figure class="ink"><div class="chip" style="background:#F2F1ED"></div><figcaption><b>Ground</b>#F2F1ED, the page</figcaption></figure>
+      <figure class="ink"><div class="chip" style="background:#E9E6DF"></div><figcaption><b>Stone</b>#E9E6DF, recipe cards</figcaption></figure>
+      <figure class="ink"><div class="chip" style="background:#F0E4E0"></div><figcaption><b>Blush</b>#F0E4E0, stories, about</figcaption></figure>
+      <figure class="ink"><div class="chip" style="background:#E6E6D8"></div><figcaption><b>Sage</b>#E6E6D8, tips, index</figcaption></figure>
+      <figure class="ink"><div class="chip" style="background:#6F7046"></div><figcaption><b>Olive mat</b>#6F7046, photo mounts</figcaption></figure>
+      <figure class="ink"><div class="chip" style="background:#7A2C35"></div><figcaption><b>Wine mat</b>#7A2C35, photo mounts</figcaption></figure>
+      <figure class="ink"><div class="chip" style="background:#6A1E28"></div><figcaption><b>Wine</b>#6A1E28, wordmark, links</figcaption></figure>
+      <figure class="ink"><div class="chip" style="background:#2A221C"></div><figcaption><b>Ink</b>#2A221C, body text</figcaption></figure>
+      <figure class="ink"><div class="chip" style="background:#33456A"></div><figcaption><b>Pen blue</b>#33456A, handwriting</figcaption></figure>
+    </div>
+  </section>
+
+  <div class="panel stone">
+    <span class="corner tl"><svg><use href="#curl"/></svg></span>
+    <span class="corner tr"><svg><use href="#curl"/></svg></span>
+    <span class="corner bl"><svg><use href="#curl"/></svg></span>
+    <span class="corner br"><svg><use href="#curl"/></svg></span>
+
+    <article class="recipe" aria-labelledby="recipe-h">
+      <header class="recipe-head">
+        <span class="sc">Cakes, number fourteen</span>
+        <h2 class="recipe-title display" id="recipe-h">Devil's Food Cake</h2>
+        <p class="recipe-dek display-it">Two dark layers, a cocoa buttercream, and no apologies.</p>
+      </header>
+
+      <dl class="particulars">
+        <div><dt class="sc">Makes</dt><dd>one 9-inch layer cake</dd></div>
+        <div><dt class="sc">Hands on</dt><dd>40 minutes</dd></div>
+        <div><dt class="sc">Start to finish</dt><dd>2½ hours</dd></div>
+      </dl>
+
+      <figure class="plate">
+        <div class="frame"><span>Your photograph here</span></div>
+        <figcaption>Side light from a north window; the plate with the chipped rim.</figcaption>
+      </figure>
+
+      <div class="recipe-body">
+        <p>Every family has a chocolate cake that settles arguments. This is ours. It owes its depth to hot coffee poured straight into the batter, which wakes the cocoa up and keeps the crumb tender for days, if it lasts that long.</p>
+        <p>Bake it the night before if you can. The flavor deepens overnight, and the layers are easier to frost once they've had time to firm.</p>
+        <h3 class="display">For the cake</h3>
+        <ul class="ingredients">
+          <li><span class="q">2 cups</span><span>all-purpose flour</span></li>
+          <li><span class="q">¾ cup</span><span>Dutch-process cocoa</span></li>
+          <li><span class="q">2 cups</span><span>sugar</span></li>
+          <li><span class="q">1 cup</span><span>hot coffee</span></li>
+          <li><span class="q">2</span><span>large eggs, at room temperature</span></li>
+        </ul>
+      </div>
+
+      <aside class="margin-note" aria-label="Cook's note">
+        <p>Coffee! Don't skip it. Nobody will taste it, everybody will notice.</p>
+        <span class="placeholder">Placeholder hand, to be replaced with scans from your cards.</span>
+      </aside>
+    </article>
+  </div>
+
+  <footer class="colophon">
+    <div class="flourish" aria-hidden="true"><svg width="120" height="20"><use href="#sprig"/></svg></div>
+    <p>Headlines in Fraunces, body in Libre Caslon Text. Meant to be cooked from.</p>
+  </footer>
+</main>
+
+<script>
+  (function () {
+    const root = document.documentElement;
+    const seg = document.getElementById('matSeg');
+    seg.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      root.setAttribute('data-mat', b.dataset.v);
+      seg.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    });
+    const btn = document.getElementById('themeToggle');
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const isDark = () => { const t = root.getAttribute('data-theme'); return t ? t === 'dark' : mq.matches; };
+    const label = () => { btn.textContent = isDark() ? 'Daylight' : 'Lamplight'; };
+    btn.addEventListener('click', () => { root.setAttribute('data-theme', isDark() ? 'light' : 'dark'); label(); });
+    mq.addEventListener('change', label);
+    label();
+  })();
+</script>
+</body>
+</html>

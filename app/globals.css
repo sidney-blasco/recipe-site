@@ -1,30 +1,179 @@
 @import "tailwindcss";
 
-@theme {
-  --color-cream: #f5f3ee;
-  --color-plum: #82659d;
-  --color-lavender: #e5d9f2;
-  --color-mauve: #b99cc8;
-  --color-lilac: #dec0f1;
-  --color-periwinkle: #aa9ced;
-  --color-blush: #ebd8d0;
-  --color-ink: #3a2e42;
+/* ============ TOKENS (Convivial v3) ============
+   All colors flow through these variables so the "lamplight"
+   dark theme can be added later in one place. */
+:root {
+  /* grounds: one per kind of section */
+  --ground: #f2f1ed; /* page background */
+  --stone: #e9e6df; /* recipe cards */
+  --blush: #f0e4e0; /* wine-tinted panel: About, stories, intros */
+  --sage: #e6e6d8; /* olive-tinted panel: Ingredient Index, Baking Tips */
 
-  --font-sans: var(--font-nunito);
-  --font-display: var(--font-fraunces);
+  /* photo mats */
+  --mat-olive: #6f7046;
+  --mat-wine: #7a2c35;
+  --mat-sage: #cfcfb6;
+  --mat: var(--mat-olive);
+  --mat-text: #edebdd;
+
+  /* inks */
+  --ink: #2a221c;
+  --ink-faded: #6b6259;
+  --wine: #6a1e28;
+  --wine-pressed: #4e141c;
+  --olive: #5f6136;
+  --pen: #33456a;
+  --ochre: #a9823a;
+  --hairline: rgba(42, 34, 28, 0.22);
+
+  /* type */
+  --display-tune: "SOFT" 60, "WONK" 0;
+  --t-display: clamp(3.6rem, 12vw, 7.5rem);
+  --t-h1: clamp(2.6rem, 6vw, 3.55rem);
+  --t-h2: 2.666rem;
+  --t-h3: 2rem;
+  --t-h4: 1.5rem;
+  --t-body: 1.125rem;
+  --t-small: 0.833rem;
+  --measure: 34rem;
+
+  /* shape */
+  --r-panel: 28px;
+  --r-photo: 16px;
+  --r-pill: 999px;
+
+  color-scheme: light;
 }
 
-body {
-  background-color: var(--color-cream);
-  color: var(--color-ink);
+@media (max-width: 760px) {
+  :root {
+    --r-panel: 20px;
+  }
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+/* ============ TAILWIND MAPPING ============
+   `inline` so utilities emit var(--ground) etc. directly. */
+@theme inline {
+  --color-ground: var(--ground);
+  --color-stone: var(--stone);
+  --color-blush: var(--blush);
+  --color-sage: var(--sage);
+  --color-mat: var(--mat);
+  --color-mat-olive: var(--mat-olive);
+  --color-mat-wine: var(--mat-wine);
+  --color-mat-sage: var(--mat-sage);
+  --color-mat-text: var(--mat-text);
+  --color-ink: var(--ink);
+  --color-ink-faded: var(--ink-faded);
+  --color-wine: var(--wine);
+  --color-wine-pressed: var(--wine-pressed);
+  --color-olive: var(--olive);
+  --color-pen: var(--pen);
+  --color-ochre: var(--ochre);
+  --color-hairline: var(--hairline);
+
+  /* Legacy palette names, pointed at the new tokens so existing pages
+     keep working mid-restyle. Remove once phases 3–7 replace them. */
+  --color-cream: var(--ground);
+  --color-plum: var(--wine);
+  --color-lavender: var(--stone);
+  --color-mauve: var(--ink-faded);
+  --color-lilac: var(--blush);
+  --color-periwinkle: var(--blush);
+
+  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  --font-body: var(--font-caslon), "Iowan Old Style", Georgia, serif;
+  --font-hand: var(--font-homemade), "Segoe Script", "Bradley Hand", cursive;
+  --font-sans: var(--font-caslon), "Iowan Old Style", Georgia, serif;
+
+  --text-display: var(--t-display);
+  --text-h1: var(--t-h1);
+  --text-h2: var(--t-h2);
+  --text-h3: var(--t-h3);
+  --text-h4: var(--t-h4);
+  --text-body: var(--t-body);
+  --text-small: var(--t-small);
+
+  --radius-panel: var(--r-panel);
+  --radius-photo: var(--r-photo);
+  --radius-pill: var(--r-pill);
+
+  --container-measure: var(--measure);
+  --container-page: 66rem;
+}
+
+/* ============ BASE ============ */
+@layer base {
+  html {
+    background: var(--ground);
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--t-body);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    font-weight: 420;
+    font-variation-settings: var(--display-tune);
+    color: var(--ink);
+  }
+
+  a {
+    color: var(--wine);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--wine);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--blush);
+    color: var(--ink);
+  }
+}
+
+/* ============ TYPE HELPERS ============ */
+@utility display {
   font-family: var(--font-display);
-  color: var(--color-plum);
+  font-weight: 420;
+  font-variation-settings: var(--display-tune);
+}
+
+@utility display-it {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 380;
+  font-variation-settings: var(--display-tune);
+}
+
+/* small-caps labels: never tracked ALL CAPS */
+@utility sc {
+  font-family: var(--font-body);
+  font-variant-caps: small-caps;
+  letter-spacing: 0.05em;
+  color: var(--ink-faded);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
