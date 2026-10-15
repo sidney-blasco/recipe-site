@@ -169,6 +169,34 @@
   color: var(--ink-faded);
 }
 
+/* ============ ORNAMENT UTILITIES ============ */
+/* Dotted row rule: round dots along the bottom of a list row
+   (ingredients, index entries). Replaces border-b hairlines. */
+@utility dotted-rule {
+  background: radial-gradient(circle, var(--hairline) 1.2px, transparent 1.6px)
+    bottom / 9px 4px repeat-x;
+}
+
+/* Corner curl size: 44px, 30px on mobile (see <CornerCurls />). */
+@utility corner {
+  width: 44px;
+  height: 44px;
+
+  @media (max-width: 760px) {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* Standalone dotted separator between stacked blocks (see <DottedRule />). */
+@utility dots {
+  height: 6px;
+  border: 0;
+  margin: 0;
+  background: radial-gradient(circle, var(--hairline) 1.4px, transparent 1.8px)
+    center / 10px 6px repeat-x;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
