@@ -169,6 +169,15 @@
   color: var(--ink-faded);
 }
 
+/* ============ LAYOUT ============ */
+/* Page container: 66rem wide, fluid side padding. */
+@utility page {
+  width: 100%;
+  max-width: 66rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2rem);
+}
+
 /* ============ ORNAMENT UTILITIES ============ */
 /* Dotted row rule: round dots along the bottom of a list row
    (ingredients, index entries). Replaces border-b hairlines. */
