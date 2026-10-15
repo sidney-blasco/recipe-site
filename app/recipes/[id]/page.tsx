@@ -30,39 +30,31 @@ export default async function RecipePage(props: PageProps<"/recipes/[id]">) {
       ? `/?type=${encodeURIComponent(recipe.mealType)}`
       : null;
 
+  const crumbLink = "no-underline decoration-wine/40 underline-offset-4 hover:text-wine hover:underline";
+
   return (
-    <main className={`mx-auto px-6 pb-24 pt-12 sm:px-8 ${hasVariations ? "max-w-6xl" : "max-w-3xl"}`}>
-      <div className={hasVariations ? "lg:flex lg:items-start lg:gap-10" : ""}>
-        <div className={hasVariations ? "min-w-0 lg:max-w-3xl lg:flex-1" : ""}>
+    <main className="page pt-6 pb-16">
+      <div className={hasVariations ? "lg:flex lg:items-start lg:gap-10" : "mx-auto max-w-[54rem]"}>
+        <div className="min-w-0 lg:flex-1">
           {/* 1. Breadcrumb */}
-          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-sm">
-            <Link
-              href="/"
-              className="text-mauve underline decoration-mauve/40 underline-offset-4 hover:text-plum"
-            >
+          <nav aria-label="Breadcrumb" className="sc flex flex-wrap items-center justify-center gap-1.5">
+            <Link href="/" className={`text-ink-faded ${crumbLink}`}>
               Recipes
             </Link>
             {breadcrumbCategory && (
               <>
-                <span className="text-ink/40" aria-hidden="true">
-                  &gt;
-                </span>
+                <span aria-hidden="true">›</span>
                 {breadcrumbHref ? (
-                  <Link
-                    href={breadcrumbHref}
-                    className="text-mauve underline decoration-mauve/40 underline-offset-4 hover:text-plum"
-                  >
+                  <Link href={breadcrumbHref} className={`text-ink-faded ${crumbLink}`}>
                     {breadcrumbCategory}
                   </Link>
                 ) : (
-                  <span className="text-ink/70">{breadcrumbCategory}</span>
+                  <span>{breadcrumbCategory}</span>
                 )}
               </>
             )}
-            <span className="text-ink/40" aria-hidden="true">
-              &gt;
-            </span>
-            <span className="text-ink/70">{recipe.title}</span>
+            <span aria-hidden="true">›</span>
+            <span className="text-ink">{recipe.title}</span>
           </nav>
 
           {/* 2-4. Title/byline, description, photo, and recipe card — inline-editable for admins */}

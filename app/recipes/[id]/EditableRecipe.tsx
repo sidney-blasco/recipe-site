@@ -4,26 +4,26 @@ import { useState } from "react";
 import Link from "next/link";
 import EditModeBar from "../../components/EditModeBar";
 import EditablePhoto from "../../components/EditablePhoto";
+import { CornerCurls } from "../../components/Ornaments";
 import IngredientChecklist from "./IngredientChecklist";
 import { formatIngredientLine } from "../../lib/recipe-format";
 import type { RecipeDetail, RecipeOption } from "../../lib/recipes";
 import { updateRecipeInline } from "./actions";
 
-const inputClass =
-  "w-full rounded-lg border border-plum/20 bg-white/70 px-3 py-2 text-ink placeholder:text-ink/40 focus:border-plum/50 focus:outline-none";
+const inputClass = "field";
 
 function PlaceholderImage() {
   return (
-    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-lavender to-mauve/40">
+    <div className="flex h-full w-full items-center justify-center bg-stone">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={1.5}
+        strokeWidth={1.25}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="h-14 w-14 text-plum/40"
+        className="h-14 w-14 text-ink-faded/50"
         aria-hidden="true"
       >
         <path d="M7 3v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V3" />
@@ -176,7 +176,7 @@ export default function EditableRecipe({
     ? displayDescription.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
     : [];
 
-  const formattedIngredients = saved.ingredients.map(formatIngredientLine);
+  const category = saved.cuisine ?? saved.mealType;
 
   const FACT_FIELDS = [
     { key: "prepTime", label: "Prep Time", placeholder: "15 min" },
@@ -186,49 +186,62 @@ export default function EditableRecipe({
   ] as const;
 
   const visibleFacts = editing ? FACT_FIELDS : FACT_FIELDS.filter((field) => Boolean(saved[field.key]));
+  const showNoteCard = !editing && Boolean(saved.notes);
 
   return (
     <>
-      {editing ? (
-        <input
-          value={draft.title}
-          onChange={(event) => update("title", event.target.value)}
-          className={`${inputClass} mt-4 font-display text-4xl sm:text-5xl`}
-        />
-      ) : (
-        <h1 className="mt-4 text-4xl sm:text-5xl">{saved.title}</h1>
-      )}
-      <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-mauve">Convivial · Sid</p>
+      {/* Header + intro, on the page ground */}
+      <header className="mt-8 text-center">
+        {category && <span className="sc mb-2 block text-[1.05rem]">{category}</span>}
+        {editing ? (
+          <input
+            value={draft.title}
+            onChange={(event) => update("title", event.target.value)}
+            className={`${inputClass} display text-center text-h1 leading-[1.02]`}
+          />
+        ) : (
+          <h1 className="m-0 text-h1 leading-[1.02]">{saved.title}</h1>
+        )}
+        <p className="sc mt-3">Convivial · Sid</p>
 
-      {editing ? (
-        <label className="mt-3 flex flex-wrap items-center gap-2 text-sm">
-          <span className="font-semibold text-plum">Parent Recipe</span>
-          <select
-            value={draft.parentRecipeId}
-            onChange={(event) => update("parentRecipeId", event.target.value)}
-            className="rounded-lg border border-plum/20 bg-white/70 px-3 py-1.5 text-ink focus:border-plum/50 focus:outline-none"
-          >
-            <option value="">— None —</option>
-            {recipeOptions.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.title}
-              </option>
-            ))}
-          </select>
-        </label>
-      ) : (
-        saved.parentRecipeTitle && (
-          <p className="mt-3 text-sm text-ink/70">
-            Part of{" "}
-            <Link
-              href={`/recipes/${saved.parentRecipeId}`}
-              className="text-mauve underline decoration-mauve/40 underline-offset-4 hover:text-plum"
+        {editing ? (
+          <label className="mt-3 flex flex-wrap items-center justify-center gap-2">
+            <span className="sc">Parent recipe</span>
+            <select
+              value={draft.parentRecipeId}
+              onChange={(event) => update("parentRecipeId", event.target.value)}
+              className={`${inputClass} w-auto py-1.5`}
             >
-              {saved.parentRecipeTitle}
-            </Link>
-          </p>
-        )
-      )}
+              <option value="">— None —</option>
+              {recipeOptions.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.title}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          saved.parentRecipeTitle && (
+            <p className="mt-2 text-ink-faded">
+              Part of{" "}
+              <Link href={`/recipes/${saved.parentRecipeId}`} className="display-it text-[1.15rem]">
+                {saved.parentRecipeTitle}
+              </Link>
+            </p>
+          )
+        )}
+      </header>
+
+      <figure className="mt-8 rounded-panel bg-mat p-[clamp(.9rem,2.5vw,1.6rem)] transition-colors duration-300">
+        <EditablePhoto
+          editing={editing}
+          imageUrl={saved.imageUrl}
+          alt={saved.title}
+          aspectClassName="aspect-[3/2]"
+          placeholder={<PlaceholderImage />}
+          onFileSelected={setImageFile}
+        />
+      </figure>
 
       {editing ? (
         <textarea
@@ -236,50 +249,49 @@ export default function EditableRecipe({
           onChange={(event) => update("description", event.target.value)}
           rows={4}
           placeholder="A short intro shown at the top of the recipe page."
-          className={`${inputClass} mt-6 text-lg`}
+          className={`${inputClass} mt-8`}
         />
       ) : (
         descriptionParagraphs.length > 0 && (
-          <div className="mt-6 flex flex-col gap-4 text-lg text-ink/80">
+          <div className="mx-auto mt-8 max-w-measure">
             {descriptionParagraphs.map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
+              <p key={index} className={`mb-[1.1rem] ${index === 0 ? "drop-cap" : ""}`}>
+                {paragraph}
+              </p>
             ))}
           </div>
         )
       )}
 
-      <div className="mt-10">
-        <EditablePhoto
-          editing={editing}
-          imageUrl={saved.imageUrl}
-          alt={saved.title}
-          aspectClassName="aspect-[16/9]"
-          placeholder={<PlaceholderImage />}
-          onFileSelected={setImageFile}
-        />
-      </div>
+      {/* The recipe card */}
+      <article className="panel mt-10 bg-stone">
+        <CornerCurls />
 
-      <div className="mt-10 rounded-2xl border-2 border-plum/20 bg-white/60 p-6 sm:p-8">
-        <h2 className="text-center font-display text-3xl text-plum">{saved.title}</h2>
-
-        {displayDescription && (
-          <p className="mx-auto mt-3 max-w-xl text-center text-sm italic text-ink/70">{displayDescription}</p>
-        )}
+        <header className="text-center">
+          <span className="sc mb-1 block text-[1.05rem]">The recipe</span>
+          <h2 className="m-0 text-h2 leading-[1.1]">{saved.title}</h2>
+          {displayDescription && (
+            <p className="display-it mx-auto mt-3 max-w-[30rem] text-[1.25rem] leading-snug text-ink-faded">
+              {displayDescription}
+            </p>
+          )}
+        </header>
 
         {visibleFacts.length > 0 && (
-          <dl className="mt-6 flex flex-wrap justify-center divide-x divide-plum/15 border-y border-plum/15 py-4">
+          <dl className="mt-7 flex flex-wrap justify-center gap-3">
             {visibleFacts.map((field) => (
-              <div key={field.key} className="flex-1 px-2 text-center">
-                <dt className="text-xs font-semibold uppercase tracking-wide text-mauve">{field.label}</dt>
+              <div key={field.key} className="rounded-pill bg-ground px-5 py-2 text-center">
+                <dt className="sc inline">{field.label}</dt>
                 {editing ? (
                   <input
                     value={draft[field.key]}
                     onChange={(event) => update(field.key, event.target.value)}
                     placeholder={field.placeholder}
-                    className="mt-1 w-full rounded border border-plum/20 bg-white/70 px-1.5 py-1 text-center text-sm text-ink focus:border-plum/50 focus:outline-none"
+                    aria-label={field.label}
+                    className={`${inputClass} ml-2 inline-block w-24 px-2 py-0.5 text-center`}
                   />
                 ) : (
-                  <dd className="mt-1 text-ink/85">{saved[field.key]}</dd>
+                  <dd className="ml-2 inline">{saved[field.key]}</dd>
                 )}
               </div>
             ))}
@@ -287,15 +299,13 @@ export default function EditableRecipe({
         )}
 
         {(editing || NUTRITION_FIELDS.some((field) => saved[field.key] !== null)) && (
-          <div className="mt-6">
-            <h3 className="text-center text-xs font-semibold uppercase tracking-wide text-mauve">
-              Nutrition <span className="font-normal normal-case text-ink/40">(per serving)</span>
-            </h3>
+          <div className="mt-6 text-center">
+            <h3 className="sc m-0 text-[1.05rem]">Nutrition, per serving</h3>
             {editing ? (
-              <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3">
+              <div className="mt-3 grid grid-cols-2 gap-4 text-left sm:grid-cols-3">
                 {NUTRITION_FIELDS.map((field) => (
-                  <label key={field.key} className="flex flex-col gap-1.5 text-sm">
-                    <span className="font-semibold text-plum">
+                  <label key={field.key} className="flex flex-col gap-1.5">
+                    <span className="sc">
                       {field.label}
                       {field.suffix && ` (${field.suffix})`}
                     </span>
@@ -311,11 +321,11 @@ export default function EditableRecipe({
                 ))}
               </div>
             ) : (
-              <dl className="mt-3 flex flex-wrap justify-center divide-x divide-plum/15 border-y border-plum/15 py-4">
+              <dl className="mt-2 flex flex-wrap justify-center gap-2">
                 {NUTRITION_FIELDS.filter((field) => saved[field.key] !== null).map((field) => (
-                  <div key={field.key} className="flex-1 px-2 text-center">
-                    <dt className="text-xs font-semibold uppercase tracking-wide text-mauve">{field.label}</dt>
-                    <dd className="mt-1 text-ink/85">
+                  <div key={field.key} className="rounded-pill bg-sage px-3.5 py-1 text-small">
+                    <dt className="sc inline">{field.label}</dt>
+                    <dd className="ml-1.5 inline">
                       {saved[field.key]}
                       {field.suffix}
                     </dd>
@@ -329,16 +339,18 @@ export default function EditableRecipe({
         {dietaryTags.length > 0 && (
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             {dietaryTags.map((tag) => (
-              <span key={tag} className="rounded-full bg-lavender px-3 py-1 text-xs font-semibold text-plum">
+              <span key={tag} className="rounded-pill bg-ground px-3.5 py-1 text-small text-olive">
                 {tag}
               </span>
             ))}
           </div>
         )}
 
-        <div className="mt-8 grid grid-cols-1 gap-10 sm:grid-cols-2">
-          <section>
-            <h3 className="font-display text-xl text-plum">Ingredients</h3>
+        <div
+          className={`mt-10 grid grid-cols-1 gap-x-10 ${showNoteCard ? "lg:grid-cols-[minmax(0,1fr)_12rem]" : ""}`}
+        >
+          <section className="min-w-0">
+            <h3 className="m-0 text-h3 leading-[1.1]">Ingredients</h3>
             {editing ? (
               <textarea
                 value={draft.ingredientsText}
@@ -347,15 +359,25 @@ export default function EditableRecipe({
                 placeholder={"2 cups flour\n1 tsp salt\n3 eggs"}
                 className={`${inputClass} mt-4`}
               />
-            ) : formattedIngredients.length > 0 ? (
-              <IngredientChecklist ingredients={formattedIngredients} />
+            ) : saved.ingredients.length > 0 ? (
+              <IngredientChecklist ingredients={saved.ingredients} />
             ) : (
-              <p className="mt-4 text-sm text-ink/60">No ingredients listed yet.</p>
+              <p className="mt-4 text-small italic text-ink-faded">No ingredients listed yet.</p>
             )}
           </section>
 
-          <section>
-            <h3 className="font-display text-xl text-plum">Instructions</h3>
+          {/* Cook's note: margin column on desktop, inline below ingredients on mobile */}
+          {showNoteCard && (
+            <aside
+              aria-label="Cook’s note"
+              className="mt-8 ml-3 max-w-[18rem] -rotate-[1.5deg] self-start rounded-[18px_22px_16px_24px] bg-ground px-[1.1rem] pt-[1.2rem] pb-4 lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-16 lg:ml-0 lg:max-w-none"
+            >
+              <p className="m-0 whitespace-pre-line font-hand text-base leading-[1.95] text-pen">{saved.notes}</p>
+            </aside>
+          )}
+
+          <section className="mt-12 min-w-0">
+            <h3 className="m-0 text-h3 leading-[1.1]">Instructions</h3>
             {editing ? (
               <textarea
                 value={draft.instructionsText}
@@ -365,39 +387,33 @@ export default function EditableRecipe({
                 className={`${inputClass} mt-4`}
               />
             ) : saved.instructions.length > 0 ? (
-              <ol className="mt-4 flex list-none flex-col gap-5">
+              <ol className="mt-4 max-w-measure list-none p-0">
                 {saved.instructions.map((step, index) => (
-                  <li key={index} className="flex gap-4">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-plum text-sm font-semibold text-cream">
-                      {index + 1}
-                    </span>
-                    <p className="pt-0.5 text-ink/85">{step}</p>
+                  <li key={index} className="dotted-rule grid grid-cols-[2.25rem_1fr] gap-3 py-4 last:bg-none">
+                    <span className="display text-[1.6rem] leading-none text-wine">{index + 1}</span>
+                    <p className="m-0">{step}</p>
                   </li>
                 ))}
               </ol>
             ) : (
-              <p className="mt-4 text-sm text-ink/60">No instructions listed yet.</p>
+              <p className="mt-4 text-small italic text-ink-faded">No instructions listed yet.</p>
             )}
           </section>
         </div>
 
-        {(editing || saved.notes) && (
-          <section className="mt-10 border-t border-plum/15 pt-6">
-            <h3 className="font-display text-xl text-plum">Notes</h3>
-            {editing ? (
-              <textarea
-                value={draft.notes}
-                onChange={(event) => update("notes", event.target.value)}
-                rows={5}
-                placeholder="Tips, substitutions, storage instructions, etc."
-                className={`${inputClass} mt-3`}
-              />
-            ) : (
-              <p className="mt-3 whitespace-pre-line text-ink/85">{saved.notes}</p>
-            )}
+        {editing && (
+          <section className="mt-10">
+            <h3 className="m-0 text-h3 leading-[1.1]">Notes</h3>
+            <textarea
+              value={draft.notes}
+              onChange={(event) => update("notes", event.target.value)}
+              rows={5}
+              placeholder="Tips, substitutions, storage instructions, etc."
+              className={`${inputClass} mt-3`}
+            />
           </section>
         )}
-      </div>
+      </article>
 
       {isAdmin && (
         <EditModeBar editing={editing} saving={saving} error={error} onToggle={startEditing} onSave={save} onCancel={cancel} />

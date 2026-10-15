@@ -178,6 +178,88 @@
   padding-inline: clamp(1rem, 3vw, 2rem);
 }
 
+/* Section panel: big soft radius, fluid padding. Pair with a bg-* ground. */
+@utility panel {
+  position: relative;
+  border-radius: var(--r-panel);
+  padding: clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 5vw, 3.5rem);
+}
+
+/* Fraunces drop cap in wine on the first letter of a paragraph. */
+@utility drop-cap {
+  &::first-letter {
+    font-family: var(--font-display);
+    font-variation-settings: var(--display-tune);
+    font-weight: 420;
+    float: left;
+    font-size: 4.1em;
+    line-height: 0.8;
+    padding: 0.06em 0.1em 0 0;
+    color: var(--wine);
+  }
+}
+
+/* ============ CONTROLS ============ */
+@utility field {
+  width: 100%;
+  background: var(--ground);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  padding: 0.55rem 0.8rem;
+  font-family: var(--font-body);
+  color: var(--ink);
+
+  &::placeholder {
+    color: var(--ink-faded);
+    opacity: 0.7;
+  }
+  &:focus {
+    border-color: var(--wine);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--wine);
+    outline-offset: 1px;
+  }
+}
+
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-pill);
+  background: var(--wine);
+  color: var(--ground);
+  font-family: var(--font-body);
+  padding: 0.6rem 1.5rem;
+  transition: background-color 200ms;
+
+  &:hover:not(:disabled) {
+    background: var(--wine-pressed);
+  }
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+@utility btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-pill);
+  background: var(--stone);
+  color: var(--ink);
+  font-family: var(--font-body);
+  padding: 0.6rem 1.5rem;
+  transition: background-color 200ms;
+
+  &:hover:not(:disabled) {
+    background: var(--blush);
+  }
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
 /* ============ ORNAMENT UTILITIES ============ */
 /* Dotted row rule: round dots along the bottom of a list row
    (ingredients, index entries). Replaces border-b hairlines. */

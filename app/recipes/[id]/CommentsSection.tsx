@@ -5,8 +5,7 @@ import { formatDate } from "../../lib/format-date";
 import type { Comment } from "../../lib/comments";
 import { submitComment } from "./actions";
 
-const inputClass =
-  "rounded-lg border border-plum/20 bg-white/70 px-3 py-2 text-ink placeholder:text-ink/40 focus:border-plum/50 focus:outline-none";
+const inputClass = "field";
 
 function Star({ filled }: { filled: boolean }) {
   return (
@@ -27,7 +26,7 @@ function Star({ filled }: { filled: boolean }) {
 function StarDisplay({ rating }: { rating: number | null }) {
   if (rating == null) return null;
   return (
-    <div className="flex gap-0.5 text-mauve" aria-label={`${rating} out of 5 stars`}>
+    <div className="flex gap-0.5 text-ochre" aria-label={`${rating} out of 5 stars`}>
       {[1, 2, 3, 4, 5].map((n) => (
         <Star key={n} filled={n <= rating} />
       ))}
@@ -74,33 +73,34 @@ export default function CommentsSection({
   }
 
   return (
-    <section className="mt-16">
-      <h2 className="font-display text-2xl text-plum">Comments</h2>
+    <section className="panel mt-10 bg-stone">
+      <h2 className="m-0 text-h2 leading-[1.1]">Comments</h2>
 
       {comments.length > 0 ? (
-        <ul className="mt-6 flex flex-col gap-6">
+        <ul className="mt-4 max-w-measure">
           {comments.map((c) => (
-            <li key={c.id} className="border-b border-plum/10 pb-6 last:border-0">
+            <li key={c.id} className="dotted-rule py-5 last:bg-none">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="font-semibold text-plum">{c.name}</p>
-                <span className="text-xs text-ink/50">{formatDate(c.createdAt)}</span>
+                <p className="display m-0 text-[1.2rem] text-ink">{c.name}</p>
+                <span className="text-small italic text-ink-faded">{formatDate(c.createdAt)}</span>
               </div>
               <div className="mt-1">
                 <StarDisplay rating={c.rating} />
               </div>
-              <p className="mt-2 text-ink/85">{c.comment}</p>
+              <p className="mt-2 mb-0">{c.comment}</p>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="mt-4 text-sm text-ink/60">No comments yet. Be the first to leave one.</p>
+        <p className="mt-4 italic text-ink-faded">No comments yet. Be the first to leave one.</p>
       )}
 
-      <form onSubmit={handleSubmit} className="mt-10 flex flex-col gap-4 border-t border-plum/10 pt-8">
-        <h3 className="font-display text-lg text-plum">Leave a Comment</h3>
+      <hr aria-hidden="true" className="dots mt-8" />
+      <form onSubmit={handleSubmit} className="mt-8 flex max-w-measure flex-col gap-4">
+        <h3 className="display-it m-0 text-h4 leading-tight">Leave a comment</h3>
 
-        <label className="flex flex-col gap-1.5 text-sm">
-          <span className="font-semibold text-plum">Name</span>
+        <label className="flex flex-col gap-1.5">
+          <span className="sc">Name</span>
           <input
             value={name}
             onChange={(event) => setName(event.target.value)}
@@ -109,8 +109,8 @@ export default function CommentsSection({
           />
         </label>
 
-        <div className="flex flex-col gap-1.5 text-sm">
-          <span className="font-semibold text-plum">Rating (optional)</span>
+        <div className="flex flex-col gap-1.5">
+          <span className="sc">Rating (optional)</span>
           <div className="flex gap-1">
             {[1, 2, 3, 4, 5].map((n) => (
               <button
@@ -119,7 +119,7 @@ export default function CommentsSection({
                 onClick={() => setRating((current) => (current === n ? null : n))}
                 aria-label={`${n} star${n === 1 ? "" : "s"}`}
                 aria-pressed={rating != null && n <= rating}
-                className="text-mauve transition-transform hover:scale-110"
+                className="rounded-full text-ochre transition-colors duration-200 hover:text-wine"
               >
                 <Star filled={rating != null && n <= rating} />
               </button>
@@ -127,8 +127,8 @@ export default function CommentsSection({
           </div>
         </div>
 
-        <label className="flex flex-col gap-1.5 text-sm">
-          <span className="font-semibold text-plum">Comment</span>
+        <label className="flex flex-col gap-1.5">
+          <span className="sc">Comment</span>
           <textarea
             value={commentText}
             onChange={(event) => setCommentText(event.target.value)}
@@ -138,12 +138,12 @@ export default function CommentsSection({
           />
         </label>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="m-0 text-small text-wine">{error}</p>}
 
         <button
           type="submit"
           disabled={pending}
-          className="self-start rounded-full bg-plum px-6 py-2.5 text-sm font-semibold text-cream transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="btn-primary self-start"
         >
           {pending ? "Posting…" : "Post Comment"}
         </button>
