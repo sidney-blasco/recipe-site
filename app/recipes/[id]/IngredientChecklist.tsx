@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import CheckBox from "../../components/CheckBox";
 import type { RecipeIngredient } from "../../lib/recipe-format";
 
 export default function IngredientChecklist({ ingredients }: { ingredients: RecipeIngredient[] }) {
@@ -32,14 +33,7 @@ export default function IngredientChecklist({ ingredients }: { ingredients: Reci
                 onChange={() => toggle(index)}
                 className="peer sr-only"
               />
-              <span
-                aria-hidden="true"
-                className="flex size-[1.05rem] translate-y-[.15em] items-center justify-center self-start rounded-[5px] border border-wine/60 bg-ground text-ground transition-colors duration-200 peer-checked:border-wine peer-checked:bg-wine peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wine"
-              >
-                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="size-2.5">
-                  <path d="M2.5 6.2 5 8.5l4.5-5" />
-                </svg>
-              </span>
+              <CheckBox className="translate-y-[.15em] self-start" />
               <span className={isChecked ? "text-ink-faded line-through" : "text-wine"}>{quantity}</span>
               <span className={isChecked ? "text-ink-faded line-through" : "text-ink"}>{ingredient.name}</span>
             </label>
