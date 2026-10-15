@@ -117,7 +117,7 @@ export default function EditableTip({ tip: initialTip, isAdmin }: { tip: Tip; is
           className={`${inputClass} mt-8`}
         />
       ) : (
-        <div className="panel mt-8 bg-sage">
+        <div className="panel mt-8 bg-blush">
           <div className="mx-auto max-w-measure">
             {paragraphs.map((paragraph, index) => (
               <p key={index} className={`mt-0 mb-[1.1rem] last:mb-0 ${index === 0 ? "drop-cap" : ""}`}>

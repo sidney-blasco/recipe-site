@@ -323,7 +323,7 @@ export default function EditableRecipe({
             ) : (
               <dl className="mt-2 flex flex-wrap justify-center gap-2">
                 {NUTRITION_FIELDS.filter((field) => saved[field.key] !== null).map((field) => (
-                  <div key={field.key} className="rounded-pill bg-sage px-3.5 py-1 text-small">
+                  <div key={field.key} className="rounded-pill bg-blush px-3.5 py-1 text-small">
                     <dt className="sc inline">{field.label}</dt>
                     <dd className="ml-1.5 inline">
                       {saved[field.key]}

@@ -29,7 +29,7 @@ function PlaceholderIcon() {
 
 export default function TipCard({ title, excerpt, date, imageUrl }: TipCardProps) {
   return (
-    <article className="flex flex-col gap-5 rounded-panel bg-sage p-3 transition-colors duration-200 hover:bg-blush sm:flex-row sm:items-start">
+    <article className="flex flex-col gap-5 rounded-panel bg-blush p-3 transition-colors duration-200 hover:bg-stone sm:flex-row sm:items-start">
       <div className="aspect-[4/3] w-full shrink-0 overflow-hidden rounded-photo bg-ground sm:w-48">
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element

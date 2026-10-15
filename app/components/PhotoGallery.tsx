@@ -9,7 +9,7 @@ type PhotoGalleryProps = {
 };
 
 // Cycled purely for visual variety between placeholder tiles — not a category signal.
-const PLACEHOLDER_GROUNDS = ["bg-stone", "bg-blush", "bg-sage", "bg-ground"];
+const PLACEHOLDER_GROUNDS = ["bg-stone", "bg-blush", "bg-ground"];
 
 function PlaceholderTile({ index }: { index: number }) {
   return (

@@ -18,7 +18,7 @@ export default async function IngredientsPage() {
       />
 
       {groups.length === 0 ? (
-        <div className="panel mt-12 bg-sage text-center">
+        <div className="panel mt-12 bg-blush text-center">
           <p className="display-it m-0 text-h4 text-ink">No ingredients yet.</p>
           <p className="mt-2 mb-0 text-small italic text-ink-faded">
             Add a recipe with some ingredients and they&apos;ll show up here.
@@ -28,14 +28,14 @@ export default async function IngredientsPage() {
         <>
           <nav
             aria-label="Jump to letter"
-            className="z-10 mt-10 flex flex-wrap justify-center gap-0.5 rounded-panel bg-sage px-3 py-2.5 lg:sticky lg:top-[4.5rem]"
+            className="z-10 mt-10 flex flex-wrap justify-center gap-0.5 rounded-panel bg-blush px-3 py-2.5 lg:sticky lg:top-[4.5rem]"
           >
             {ALL_LETTERS.map((letter) =>
               availableLetters.has(letter) ? (
                 <a
                   key={letter}
                   href={`#letter-${letter}`}
-                  className="display flex size-8 items-center justify-center rounded-pill text-[1.1rem] text-wine no-underline transition-colors duration-200 hover:bg-blush"
+                  className="display flex size-8 items-center justify-center rounded-pill text-[1.1rem] text-wine no-underline transition-colors duration-200 hover:bg-ground"
                 >
                   {letter}
                 </a>
@@ -51,7 +51,7 @@ export default async function IngredientsPage() {
             )}
           </nav>
 
-          <div className="panel mt-6 bg-sage">
+          <div className="panel mt-6 bg-blush">
             <div className="mx-auto flex max-w-[40rem] flex-col gap-10">
               {groups.map((group) => (
                 <section key={group.letter} id={`letter-${group.letter}`} className="scroll-mt-24 lg:scroll-mt-40">
@@ -61,7 +61,7 @@ export default async function IngredientsPage() {
                       <li key={ingredient.name} className="dotted-rule">
                         {/* Native <details>: starts collapsed; Enter/Space on the summary toggles it. */}
                         <details className="group">
-                          <summary className="flex cursor-pointer list-none items-center gap-2 rounded-[12px] px-2 py-1.5 transition-colors duration-200 hover:bg-blush [&::-webkit-details-marker]:hidden">
+                          <summary className="flex cursor-pointer list-none items-center gap-2 rounded-[12px] px-2 py-1.5 transition-colors duration-200 hover:bg-ground [&::-webkit-details-marker]:hidden">
                             <svg
                               aria-hidden="true"
                               viewBox="0 0 20 20"
@@ -84,7 +84,7 @@ export default async function IngredientsPage() {
                               <li key={recipe.id}>
                                 <Link
                                   href={`/recipes/${recipe.id}`}
-                                  className="display-it block rounded-[12px] px-2 py-0.5 text-[1.05rem] no-underline transition-colors duration-200 hover:bg-blush"
+                                  className="display-it block rounded-[12px] px-2 py-0.5 text-[1.05rem] no-underline transition-colors duration-200 hover:bg-ground"
                                 >
                                   {recipe.title}
                                 </Link>

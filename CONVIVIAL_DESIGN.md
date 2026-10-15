@@ -2,7 +2,9 @@
 
 The visual source of truth for cookconvivial.com. The approved reference proof is
 `convivial-specimen-v3.html` (repo root). Open it in a browser and match it.
-When this document and the reference disagree, the reference wins.
+When this document and the reference disagree, the reference wins, with one
+exception: the sage ground (`#E6E6D8`) shown in the reference has been removed.
+Use blush wherever the reference shows a sage panel.
 
 **Soul:** antique Americana (leading), Italian trattoria warmth, grandma's handwritten
 cookbook. Warm, relaxed, lived-in. Not rustic-kitschy, not farmhouse-trendy.
@@ -81,8 +83,7 @@ const hand = Homemade_Apple({
   /* grounds: one per kind of section */
   --ground: #F2F1ED;      /* page background (gray-white) */
   --stone:  #E9E6DF;      /* recipe cards */
-  --blush:  #F0E4E0;      /* wine-tinted panel: About, stories, intros */
-  --sage:   #E6E6D8;      /* olive-tinted panel: Ingredient Index, Baking Tips */
+  --blush:  #F0E4E0;      /* wine-tinted panel: About, Ingredient Index, Baking Tips, stories */
 
   /* photo mats */
   --mat-olive: #6F7046;   /* DEFAULT photo mount */
@@ -115,7 +116,7 @@ Rules:
 ### Tailwind mapping
 
 Check whether the project uses Tailwind v3 (`tailwind.config.*`) or v4 (`@theme` in CSS)
-and map the variables accordingly, e.g. `bg-ground`, `bg-stone`, `bg-blush`, `bg-sage`,
+and map the variables accordingly, e.g. `bg-ground`, `bg-stone`, `bg-blush`,
 `text-ink`, `text-ink-faded`, `text-wine`, `font-display`, `font-body`, `font-hand`,
 `rounded-panel` (28px), `rounded-photo` (16px). Colors must reference the CSS
 variables, not hard-coded hex, so themes can change in one place.
@@ -169,7 +170,7 @@ Build these as small reusable React components.
 | Recipe card (the structured recipe block) | `--stone` panel with CornerCurls |
 | Recipe intro/story above the card | `--ground` |
 | About page | `--blush` panel |
-| Ingredient Index, Baking Tips | `--sage` panels |
+| Ingredient Index, Baking Tips | `--blush` panels |
 | Photos page | `--ground`, each photo on its own `--mat` |
 | Comments and ratings | `--stone` panel, no curls |
 | Footer | `--ground`, Sprig at top, centered colophon in Caslon italic |
@@ -201,7 +202,7 @@ Sticky, on `--ground`, no border; use a dotted rule underneath on scroll if need
   background, irregular radius `18px 22px 16px 24px`, rotated `-1.5deg`,
   handwriting font in `--pen`. On desktop it sits in a right margin column
   (12rem) and is sticky; on mobile it sits inline below the ingredients.
-- Nutrition: small `--sage` pill chips.
+- Nutrition: small `--blush` pill chips.
 - Star ratings: ochre.
 - Sub-recipe variation links: wine links in Fraunces italic.
 
@@ -238,7 +239,7 @@ Ornaments are `aria-hidden`. Responsive down to 360px wide.
 4. Recipe page (header, pills, photo mat, drop cap, ingredients, steps,
    cook's note card, nutrition, comments).
 5. Home / recipe index cards.
-6. About (blush), Ingredient Index and Baking Tips (sage), Photos (mats).
+6. About, Ingredient Index and Baking Tips (blush), Photos (mats).
 7. Admin: tokens and fonts only.
 
 ## 10. Coming later (do not build yet)

@@ -7,8 +7,7 @@
   /* grounds: one per kind of section */
   --ground: #f2f1ed; /* page background */
   --stone: #e9e6df; /* recipe cards */
-  --blush: #f0e4e0; /* wine-tinted panel: About, stories, intros */
-  --sage: #e6e6d8; /* olive-tinted panel: Ingredient Index, Baking Tips */
+  --blush: #f0e4e0; /* wine-tinted panel: About, Ingredient Index, Baking Tips */
 
   /* photo mats */
   --mat-olive: #6f7046;
@@ -58,7 +57,6 @@
   --color-ground: var(--ground);
   --color-stone: var(--stone);
   --color-blush: var(--blush);
-  --color-sage: var(--sage);
   --color-mat: var(--mat);
   --color-mat-olive: var(--mat-olive);
   --color-mat-wine: var(--mat-wine);
