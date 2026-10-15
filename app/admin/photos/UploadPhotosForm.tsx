@@ -16,12 +16,12 @@ export default function UploadPhotosForm() {
         accept="image/*"
         multiple
         required
-        className="text-sm text-ink/70 file:mr-3 file:rounded-full file:border-0 file:bg-lavender file:px-4 file:py-2 file:text-sm file:font-semibold file:text-plum"
+        className="text-sm text-ink/70 file:mr-3 file:rounded-pill file:border-0 file:bg-stone file:px-4 file:py-2 file:text-sm file:font-semibold file:text-wine"
       />
       <button
         type="submit"
         disabled={pending}
-        className="rounded-full bg-plum px-5 py-2.5 text-sm font-semibold text-cream transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="rounded-pill bg-wine px-5 py-2.5 text-sm font-semibold text-ground transition-opacity hover:opacity-90 disabled:opacity-60"
       >
         {pending ? "Uploading…" : "Upload"}
       </button>

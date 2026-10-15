@@ -12,7 +12,7 @@ export default async function AdminPhotosPage() {
         Upload new photos to the gallery, or remove ones you no longer want shown.
       </p>
 
-      <div className="mt-8 rounded-2xl border border-plum/15 bg-white/60 p-6">
+      <div className="mt-8 rounded-panel border border-hairline bg-stone p-6">
         <UploadPhotosForm />
       </div>
 
@@ -22,7 +22,7 @@ export default async function AdminPhotosPage() {
         <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {photos.map((photo) => (
             <div key={photo.id} className="flex flex-col gap-2">
-              <div className="aspect-square w-full overflow-hidden rounded-2xl bg-lavender">
+              <div className="aspect-square w-full overflow-hidden rounded-panel bg-stone">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={photo.src ?? undefined} alt={photo.alt} className="h-full w-full object-cover" />
               </div>

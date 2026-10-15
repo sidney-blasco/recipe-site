@@ -14,7 +14,7 @@ export default function DeletePhotoButton({ id, url, alt }: { id: string; url: s
     >
       <button
         type="submit"
-        className="w-full rounded-full border border-red-300 px-3 py-1.5 text-xs font-semibold text-red-600 transition-colors hover:bg-red-50"
+        className="w-full rounded-pill border border-red-300 px-3 py-1.5 text-xs font-semibold text-red-600 transition-colors hover:bg-red-50"
       >
         Delete
       </button>

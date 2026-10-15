@@ -82,7 +82,7 @@ function numOrNull(value: string): number | null {
 }
 
 const rowInputClass =
-  "w-full rounded-lg border border-plum/20 bg-white/70 px-2 py-1.5 text-sm text-ink placeholder:text-ink/40 focus:border-plum/50 focus:outline-none";
+  "field px-2 py-1.5 text-sm";
 
 export default function IngredientNutrition({
   initialIngredientsText,
@@ -235,14 +235,14 @@ export default function IngredientNutrition({
   return (
     <div className="flex flex-col gap-4">
       <label className="flex flex-col gap-1.5 text-sm">
-        <span className="font-semibold text-plum">Ingredients</span>
+        <span className="font-semibold text-wine">Ingredients</span>
         <textarea
           name="ingredientsText"
           value={ingredientsText}
           onChange={(event) => setIngredientsText(event.target.value)}
           rows={10}
           placeholder={"2 cups flour\n1 tsp salt\n3 eggs"}
-          className="rounded-lg border border-plum/20 bg-white/70 px-3 py-2 text-ink placeholder:text-ink/40 focus:border-plum/50 focus:outline-none"
+          className="field w-auto"
         />
         <p className="text-xs text-ink/50">One ingredient per line.</p>
       </label>
@@ -257,17 +257,17 @@ export default function IngredientNutrition({
             const needsSave = willSaveToLibrary(row);
             const saveLabel = needsSave ? "New — will be saved" : "Auto-filled from library";
             return (
-              <div key={index} className="rounded-xl border border-plum/15 bg-white/50 p-3">
+              <div key={index} className="rounded-xl border border-hairline bg-stone p-3">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <p className="text-sm text-ink/85">
-                    <span className="font-semibold text-plum">
+                    <span className="font-semibold text-wine">
                       {row.quantity != null ? row.quantity : ""} {row.unit}
                     </span>{" "}
                     {row.name}
                   </p>
                   <span
-                    className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                      needsSave ? "bg-lavender text-plum" : "bg-plum/10 text-plum"
+                    className={`rounded-pill px-2.5 py-0.5 text-xs font-semibold ${
+                      needsSave ? "bg-stone text-wine" : "bg-wine/10 text-wine"
                     }`}
                   >
                     {saveLabel}
@@ -300,14 +300,14 @@ export default function IngredientNutrition({
       <input type="hidden" name="ingredientLibraryUpserts" value={JSON.stringify(libraryUpserts)} />
 
       <fieldset className="flex flex-col gap-3">
-        <legend className="text-sm font-semibold uppercase tracking-wide text-plum">
+        <legend className="sc text-[1.05rem] text-ink">
           Nutrition <span className="font-normal normal-case text-ink/50">(per serving)</span>
         </legend>
         <p className="text-xs text-ink/50">Calculated automatically from the ingredients above.</p>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           {NUTRITION_FIELDS.map((field) => (
             <label key={field.key} className="flex flex-col gap-1.5 text-sm">
-              <span className="font-semibold text-plum">
+              <span className="font-semibold text-wine">
                 {field.label}
                 {field.suffix && ` (${field.suffix})`}
               </span>
@@ -316,7 +316,7 @@ export default function IngredientNutrition({
                 name={field.key}
                 readOnly
                 value={totals[field.key]}
-                className="rounded-lg border border-plum/20 bg-lavender/30 px-3 py-2 text-ink focus:outline-none"
+                className="field w-auto bg-stone"
               />
             </label>
           ))}

@@ -17,9 +17,9 @@ export default function AdminDashboardPage() {
           <Link
             key={link.href}
             href={link.href}
-            className="group flex flex-col gap-2 rounded-2xl border border-plum/15 bg-white/60 p-6 transition-shadow hover:shadow-md"
+            className="group flex flex-col gap-2 rounded-panel border border-hairline bg-stone p-6 transition-colors duration-200 hover:bg-blush"
           >
-            <h2 className="font-display text-xl text-plum group-hover:underline">{link.label}</h2>
+            <h2 className="font-display text-xl text-wine group-hover:underline">{link.label}</h2>
             <p className="text-sm text-ink/70">{link.description}</p>
           </Link>
         ))}

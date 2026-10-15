@@ -8,13 +8,13 @@ export default async function AdminLayout(props: LayoutProps<"/admin">) {
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="border-b border-plum/15 bg-white/40">
+      <div className="border-b border-hairline bg-stone">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4 sm:px-8">
-          <span className="font-display text-xl text-plum">Admin</span>
+          <span className="font-display text-xl text-wine">Admin</span>
           <form action={logout}>
             <button
               type="submit"
-              className="rounded-full border border-plum/30 px-4 py-1.5 text-sm font-semibold text-plum transition-colors hover:bg-lavender"
+              className="rounded-pill border border-hairline px-4 py-1.5 text-sm font-semibold text-wine transition-colors hover:bg-blush"
             >
               Log Out
             </button>

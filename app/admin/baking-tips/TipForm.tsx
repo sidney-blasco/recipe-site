@@ -15,7 +15,7 @@ type TipFormProps = {
 
 const initialState: TipFormState = { error: null };
 const inputClass =
-  "rounded-lg border border-plum/20 bg-white/70 px-3 py-2 text-ink placeholder:text-ink/40 focus:border-plum/50 focus:outline-none";
+  "field w-auto";
 
 export default function TipForm({ formAction, submitLabel, initial }: TipFormProps) {
   const [state, action, pending] = useActionState(formAction, initialState);
@@ -23,12 +23,12 @@ export default function TipForm({ formAction, submitLabel, initial }: TipFormPro
   return (
     <form action={action} encType="multipart/form-data" className="flex flex-col gap-6">
       <label className="flex flex-col gap-1.5 text-sm">
-        <span className="font-semibold text-plum">Title</span>
+        <span className="font-semibold text-wine">Title</span>
         <input name="title" defaultValue={initial?.title} required className={inputClass} />
       </label>
 
       <label className="flex flex-col gap-1.5 text-sm">
-        <span className="font-semibold text-plum">Body</span>
+        <span className="font-semibold text-wine">Body</span>
         <textarea
           name="body"
           defaultValue={initial?.body}
@@ -40,7 +40,7 @@ export default function TipForm({ formAction, submitLabel, initial }: TipFormPro
       </label>
 
       <label className="flex flex-col gap-1.5 text-sm">
-        <span className="font-semibold text-plum">Photo (optional)</span>
+        <span className="font-semibold text-wine">Photo (optional)</span>
         <div className="flex flex-col gap-3">
           {initial?.imageUrl && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -54,7 +54,7 @@ export default function TipForm({ formAction, submitLabel, initial }: TipFormPro
             type="file"
             name="image"
             accept="image/*"
-            className="text-sm text-ink/70 file:mr-3 file:rounded-full file:border-0 file:bg-lavender file:px-4 file:py-2 file:text-sm file:font-semibold file:text-plum"
+            className="text-sm text-ink/70 file:mr-3 file:rounded-pill file:border-0 file:bg-stone file:px-4 file:py-2 file:text-sm file:font-semibold file:text-wine"
           />
           {initial?.imageUrl && (
             <p className="text-xs text-ink/50">Choose a new file to replace the current photo, or leave blank to keep it.</p>
@@ -67,7 +67,7 @@ export default function TipForm({ formAction, submitLabel, initial }: TipFormPro
       <button
         type="submit"
         disabled={pending}
-        className="self-start rounded-full bg-plum px-6 py-2.5 text-sm font-semibold text-cream transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="self-start rounded-pill bg-wine px-6 py-2.5 text-sm font-semibold text-ground transition-opacity hover:opacity-90 disabled:opacity-60"
       >
         {pending ? "Saving…" : submitLabel}
       </button>

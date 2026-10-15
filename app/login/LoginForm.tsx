@@ -13,7 +13,7 @@ export default function LoginForm({ next }: { next: string }) {
       <input type="hidden" name="next" value={next} />
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="password" className="text-sm font-semibold text-plum">
+        <label htmlFor="password" className="text-sm font-semibold text-wine">
           Password
         </label>
         <input
@@ -23,7 +23,7 @@ export default function LoginForm({ next }: { next: string }) {
           required
           autoFocus
           autoComplete="current-password"
-          className="rounded-lg border border-plum/20 bg-white/70 px-3 py-2 text-ink focus:border-plum/50 focus:outline-none"
+          className="field w-auto"
         />
       </div>
 
@@ -32,7 +32,7 @@ export default function LoginForm({ next }: { next: string }) {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-full bg-plum py-2.5 text-sm font-semibold text-cream transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="rounded-pill bg-wine py-2.5 text-sm font-semibold text-ground transition-opacity hover:opacity-90 disabled:opacity-60"
       >
         {pending ? "Checking…" : "Log In"}
       </button>

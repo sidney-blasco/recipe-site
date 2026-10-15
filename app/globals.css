@@ -73,15 +73,6 @@
   --color-ochre: var(--ochre);
   --color-hairline: var(--hairline);
 
-  /* Legacy palette names, pointed at the new tokens so existing pages
-     keep working mid-restyle. Remove once phases 3–7 replace them. */
-  --color-cream: var(--ground);
-  --color-plum: var(--wine);
-  --color-lavender: var(--stone);
-  --color-mauve: var(--ink-faded);
-  --color-lilac: var(--blush);
-  --color-periwinkle: var(--blush);
-
   --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
   --font-body: var(--font-caslon), "Iowan Old Style", Georgia, serif;
   --font-hand: var(--font-homemade), "Segoe Script", "Bradley Hand", cursive;

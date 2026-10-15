@@ -12,15 +12,15 @@ type EditModeBarProps = {
 export default function EditModeBar({ editing, saving, error, onToggle, onSave, onCancel }: EditModeBarProps) {
   return (
     <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
-      {error && <p className="max-w-xs rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600 shadow-md">{error}</p>}
+      {error && <p className="max-w-xs rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}
 
       {editing ? (
-        <div className="flex items-center gap-2 rounded-full border border-plum/20 bg-white/95 p-1.5 shadow-lg backdrop-blur">
+        <div className="flex items-center gap-2 rounded-pill border border-hairline bg-ground p-1.5">
           <button
             type="button"
             onClick={onCancel}
             disabled={saving}
-            className="rounded-full px-4 py-2 text-sm font-semibold text-ink/70 transition-colors hover:bg-lavender disabled:opacity-50"
+            className="rounded-pill px-4 py-2 text-sm font-semibold text-ink/70 transition-colors hover:bg-blush disabled:opacity-50"
           >
             Cancel
           </button>
@@ -28,7 +28,7 @@ export default function EditModeBar({ editing, saving, error, onToggle, onSave, 
             type="button"
             onClick={onSave}
             disabled={saving}
-            className="rounded-full bg-plum px-5 py-2 text-sm font-semibold text-cream transition-opacity hover:opacity-90 disabled:opacity-60"
+            className="rounded-pill bg-wine px-5 py-2 text-sm font-semibold text-ground transition-opacity hover:opacity-90 disabled:opacity-60"
           >
             {saving ? "Saving…" : "Save"}
           </button>
@@ -37,7 +37,7 @@ export default function EditModeBar({ editing, saving, error, onToggle, onSave, 
         <button
           type="button"
           onClick={onToggle}
-          className="flex items-center gap-2 rounded-full bg-plum px-5 py-3 text-sm font-semibold text-cream shadow-lg transition-opacity hover:opacity-90"
+          className="flex items-center gap-2 rounded-pill bg-wine px-5 py-3 text-sm font-semibold text-ground transition-opacity hover:opacity-90"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

@@ -43,12 +43,12 @@ type RecipeFormProps = {
 
 const initialState: RecipeFormState = { error: null };
 const inputClass =
-  "rounded-lg border border-plum/20 bg-white/70 px-3 py-2 text-ink placeholder:text-ink/40 focus:border-plum/50 focus:outline-none";
+  "field w-auto";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="flex flex-col gap-1.5 text-sm">
-      <span className="font-semibold text-plum">{label}</span>
+      <span className="font-semibold text-wine">{label}</span>
       {children}
     </label>
   );
@@ -67,7 +67,7 @@ function CheckboxGroup({
 }) {
   return (
     <fieldset>
-      <legend className="text-sm font-semibold uppercase tracking-wide text-plum">{label}</legend>
+      <legend className="sc text-[1.05rem] text-ink">{label}</legend>
       <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2">
         {options.map((option) => (
           <label key={option} className="flex items-center gap-2 text-sm text-ink/80">
@@ -76,7 +76,7 @@ function CheckboxGroup({
               name={name}
               value={option}
               defaultChecked={defaultValues.includes(option)}
-              className="h-4 w-4 rounded border-plum/40 text-plum accent-plum"
+              className="h-4 w-4 rounded border-hairline text-wine accent-wine"
             />
             {option}
           </label>
@@ -222,7 +222,7 @@ export default function RecipeForm({ formAction, submitLabel, initial, recipeOpt
             type="file"
             name="image"
             accept="image/*"
-            className="text-sm text-ink/70 file:mr-3 file:rounded-full file:border-0 file:bg-lavender file:px-4 file:py-2 file:text-sm file:font-semibold file:text-plum"
+            className="text-sm text-ink/70 file:mr-3 file:rounded-pill file:border-0 file:bg-stone file:px-4 file:py-2 file:text-sm file:font-semibold file:text-wine"
           />
           {initial?.imageUrl && (
             <p className="text-xs text-ink/50">Choose a new file to replace the current photo, or leave blank to keep it.</p>
@@ -235,7 +235,7 @@ export default function RecipeForm({ formAction, submitLabel, initial, recipeOpt
       <button
         type="submit"
         disabled={pending}
-        className="self-start rounded-full bg-plum px-6 py-2.5 text-sm font-semibold text-cream transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="self-start rounded-pill bg-wine px-6 py-2.5 text-sm font-semibold text-ground transition-opacity hover:opacity-90 disabled:opacity-60"
       >
         {pending ? "Saving…" : submitLabel}
       </button>
